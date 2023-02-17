@@ -1,8 +1,19 @@
-import { SearchIcon, CloseIcon } from "@chakra-ui/icons";
+import { SearchIcon, CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
   Container,
+  Divider,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerOverlay,
   Flex,
   FormControl,
   Image,
@@ -13,20 +24,142 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Form, Link } from "@remix-run/react";
 import { useState } from "react";
 import Logo from "../../public/logo.png";
+import { Link as ChakraLink } from "@chakra-ui/react";
 
 const Navbar = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [isSearching, setIsSearching] = useState(false);
   return (
     <Box as="nav" p="3" bg={"blackAlpha.800"}>
       <Container maxW="container.xl" px={{ base: 0, md: 4 }}>
         <Flex justifyContent="space-between" alignItems={"center"}>
-          <Link to="/home">
-            <Image src={Logo} alt="Logo" w={{ base: "100px", md: "150px" }} objectFit="cover" />
-          </Link>
+          <Flex alignItems={"center"}>
+            <Button
+              onClick={onOpen}
+              bg="transparent"
+              _hover={{ bg: "black" }}
+              _active={{ bg: "black" }}
+              display={{ base: "block", md: "none" }}
+              px={{ base: 2, md: 4 }}
+            >
+              <HamburgerIcon color="yellow.400" boxSize={6} />
+            </Button>
+
+            <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="xs">
+              <DrawerOverlay />
+              <DrawerContent bg={"#212020"} p="0" pt="40px">
+                <DrawerCloseButton color="yellow.400" mb={"25px"} />
+
+                <DrawerBody p={"0"}>
+                  <Accordion>
+                    <AccordionItem border={"none"}>
+                      <h2>
+                        <AccordionButton
+                          _hover={{ color: "yellow.100" }}
+                          color="yellow.400"
+                          _expanded={{ color: "yellow.100" }}
+                          py="1"
+                        >
+                          <Box as="span" flex="1" textAlign="left" color="inherit">
+                            Movies
+                          </Box>
+                          <AccordionIcon color="inherit" />
+                        </AccordionButton>
+                      </h2>
+                      <AccordionPanel p="0" color="yellow.400">
+                        <ChakraLink
+                          width="100%"
+                          display="block"
+                          p="1"
+                          pl="35px"
+                          textStyle="none"
+                          _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                        >
+                          Lorem
+                        </ChakraLink>
+                        <Divider />
+                      </AccordionPanel>
+                    </AccordionItem>
+                    <AccordionItem border={"none"}>
+                      <h2>
+                        <AccordionButton
+                          _hover={{ color: "yellow.100" }}
+                          color="yellow.400"
+                          _expanded={{ color: "yellow.100" }}
+                          py="1"
+                        >
+                          <Box as="span" flex="1" textAlign="left" color="inherit">
+                            TV Shows
+                          </Box>
+                          <AccordionIcon color="inherit" />
+                        </AccordionButton>
+                      </h2>
+                      <AccordionPanel p="0" color="yellow.400">
+                        <ChakraLink
+                          width="100%"
+                          display="block"
+                          p="1"
+                          pl="35px"
+                          textStyle="none"
+                          _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                        >
+                          Lorem
+                        </ChakraLink>
+                        <Divider />
+                      </AccordionPanel>
+                    </AccordionItem>
+                    <AccordionItem border={"none"} _expanded={{ border: "3px" }}>
+                      <h2>
+                        <AccordionButton
+                          _hover={{ color: "yellow.100" }}
+                          color="yellow.400"
+                          _expanded={{ color: "yellow.100" }}
+                          py="1"
+                        >
+                          <Box as="span" flex="1" textAlign="left" color="inherit">
+                            People
+                          </Box>
+                          <AccordionIcon color="inherit" />
+                        </AccordionButton>
+                      </h2>
+                      <AccordionPanel p="0" color="yellow.400">
+                        <ChakraLink
+                          width="100%"
+                          display="block"
+                          p="1"
+                          pl="35px"
+                          textStyle="none"
+                          _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                        >
+                          Lorem
+                        </ChakraLink>
+                        <ChakraLink
+                          width="100%"
+                          display="block"
+                          p="1"
+                          pl="35px"
+                          textStyle="none"
+                          _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                        >
+                          Lorem
+                        </ChakraLink>
+                        <Divider />
+                      </AccordionPanel>
+                    </AccordionItem>
+                  </Accordion>
+                </DrawerBody>
+              </DrawerContent>
+            </Drawer>
+            <Link to="/home">
+              <Image src={Logo} alt="Logo" w={{ base: "100px", md: "150px" }} objectFit="cover" />
+            </Link>
+          </Flex>
+
           <Box display={{ base: "none", md: "block" }}>
             <Form method="post" action="/search">
               <FormControl display="flex" borderColor={"yellow"} _hover={{ borderColor: "yellow" }}>
@@ -71,6 +204,7 @@ const Navbar = () => {
                 _hover={{ bg: "black" }}
                 _active={{ bg: "black" }}
                 px={{ base: 2, md: 4 }}
+                display={{ md: "block", base: "none" }}
               >
                 Movies
               </MenuButton>
@@ -88,6 +222,7 @@ const Navbar = () => {
                 _hover={{ bg: "black" }}
                 _active={{ bg: "black" }}
                 px={{ base: 2, md: 4 }}
+                display={{ md: "block", base: "none" }}
               >
                 TV Shows
               </MenuButton>
@@ -107,6 +242,7 @@ const Navbar = () => {
                 _hover={{ bg: "black" }}
                 _active={{ bg: "black" }}
                 px={{ base: 2, md: 4 }}
+                display={{ md: "block", base: "none" }}
               >
                 People
               </MenuButton>
@@ -116,6 +252,17 @@ const Navbar = () => {
                 <MenuItem px={"6"}>Lorem</MenuItem>
               </MenuList>
             </Menu>
+            <Link to="/login">
+              <Button
+                bg="transparent"
+                color="yellow.400"
+                _hover={{ bg: "black" }}
+                _active={{ bg: "black" }}
+                px={{ base: 2, md: 4 }}
+              >
+                Login
+              </Button>
+            </Link>
           </Box>
         </Flex>
       </Container>
