@@ -1,7 +1,7 @@
-import { Text } from "@chakra-ui/react";
+import MainImage from "~/components/MainImage";
 
 const index = () => {
-  return <Text>Index</Text>;
+  return <MainImage />;
 };
 
 export default index;
