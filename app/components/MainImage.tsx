@@ -1,4 +1,4 @@
-import { Box, Image, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import Batman from "../../public/batman.jpg";
 const MainImage = () => {
   return (

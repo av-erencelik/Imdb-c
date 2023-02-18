@@ -5,7 +5,9 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useCatch }
 import { extendTheme } from "@chakra-ui/react";
 import Navbar from "./components/Navbar";
 import { Menu } from "./menuStyling";
-
+import stylesSlick from "slick-carousel/slick/slick.css";
+import stylesSlickTheme from "slick-carousel/slick/slick-theme.css";
+import global from "../app/styles/global.css";
 const theme = extendTheme({
   fonts: {
     body: `'Hind'`,
@@ -81,4 +83,11 @@ export function ErrorBoundary({ error }: { error: Error }) {
       </ChakraProvider>
     </Document>
   );
+}
+export function links() {
+  return [
+    { rel: "stylesheet", href: stylesSlick },
+    { rel: "stylesheet", href: stylesSlickTheme },
+    { rel: "stylesheet", href: global },
+  ];
 }
