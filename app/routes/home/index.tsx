@@ -2,7 +2,8 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import MainImage from "~/components/MainImage";
 import SimpleSlider from "~/components/MovieSlider";
-import { returnNecessaryMovieData, returnNecessaryTvData } from "~/data.server";
+import PeopleImage from "~/components/PeopleImage";
+import { returnNecessaryMovieData, returnNecessaryPeople, returnNecessaryTvData } from "~/data.server";
 
 export const loader = async () => {
   const responseFeaturedMovies = await fetch(
@@ -15,16 +16,23 @@ export const loader = async () => {
   );
   let featuredTvShows = await responseFeaturedTvShows.json();
   featuredTvShows = returnNecessaryTvData(featuredTvShows);
-  return json({ featuredMovies, featuredTvShows });
+  const responseFeaturedPeople = await fetch(
+    `https://api.themoviedb.org/3/trending/person/week?api_key=${process.env.API_KEY}`
+  );
+  let featuredPeople = await responseFeaturedPeople.json();
+  featuredPeople = returnNecessaryPeople(featuredPeople);
+  return json({ featuredMovies, featuredTvShows, featuredPeople });
 };
 
 const Home = () => {
-  const { featuredMovies, featuredTvShows } = useLoaderData<typeof loader>();
+  const { featuredMovies, featuredTvShows, featuredPeople } = useLoaderData<typeof loader>();
   return (
     <>
       <MainImage />
       <SimpleSlider movies={featuredMovies} title={"Featured Movies"} />
       <SimpleSlider movies={featuredTvShows} title={"Featured TV Shows"} />
+      <PeopleImage />
+      <SimpleSlider movies={featuredPeople} title={"Featured People"} />
     </>
   );
 };

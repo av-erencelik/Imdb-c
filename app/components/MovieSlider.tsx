@@ -3,8 +3,7 @@ import { Box, Card, CardBody, CardFooter, Container, Flex, Image, Skeleton, Text
 import { Link } from "@remix-run/react";
 import { useRef } from "react";
 import Slider from "react-slick";
-import logo from "../../public/logo.png";
-export default function SimpleSlider(props: { title: string; movies: NecessaryData[] }) {
+export default function SimpleSlider(props: { title: string; movies: NecessaryData[] | NecessaryDataPeople[] }) {
   const { movies, title } = props;
   const slider = useRef(null);
   let settings = {
@@ -46,12 +45,12 @@ export default function SimpleSlider(props: { title: string; movies: NecessaryDa
     ],
   };
   return (
-    <Container maxW="container.xl" mt="2">
-      <Text as="h2" fontSize="2xl" fontWeight="bold" color="yellow.400">
+    <Container maxW="container.xl" mt="2" px={"1"}>
+      <Text as="h2" fontSize="2xl" fontWeight="bold" color="yellow.400" bg="blackAlpha.800" pl="4" borderRadius="md">
         {title}
       </Text>
       <Slider {...settings} ref={slider}>
-        {movies.map((movie: NecessaryData, index: number) => (
+        {movies.map((movie: NecessaryData | NecessaryDataPeople, index: number) => (
           <Card maxW="175px" h="285px" overflow="hidden" cursor="pointer" key={index} className="hover">
             <Link to={`/${movie.id}`}>
               <CardBody p="0">
@@ -69,23 +68,31 @@ export default function SimpleSlider(props: { title: string; movies: NecessaryDa
               </CardBody>
               <CardFooter display="block" p="2">
                 <Box display="flex" justifyContent="space-between" alignItems="center" gap="20px">
-                  <Flex gap="5px" alignItems="center">
-                    <StarIcon color="yellow.400" boxSize={3} />
-                    <Text fontWeight="medium" fontSize="sm" color="yellow.400">
-                      {movie.rating}
-                    </Text>
-                  </Flex>
+                  {"rating" in movie ? (
+                    <Flex gap="5px" alignItems="center">
+                      <StarIcon color="yellow.400" boxSize={3} />
+                      <Text fontWeight="medium" fontSize="sm" color="yellow.400">
+                        {movie.rating}
+                      </Text>
+                    </Flex>
+                  ) : null}
 
-                  <Text fontSize="sm">
-                    {new Date(movie.releaseDate).toLocaleString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </Text>
+                  {"releaseDate" in movie ? (
+                    <Text fontSize="sm">
+                      {new Date(movie.releaseDate).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </Text>
+                  ) : (
+                    <Text fontSize="sm">
+                      {movie.role === "Acting" ? (movie.gender === "female" ? "Actress" : "Actor") : "Director"}
+                    </Text>
+                  )}
                 </Box>
                 <Text noOfLines={2} fontWeight="semibold" fontSize="medium">
-                  {movie.title}
+                  {"title" in movie ? movie.title : movie.name}
                 </Text>
               </CardFooter>
             </Link>

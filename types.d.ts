@@ -5,3 +5,10 @@ interface NecessaryData {
   title: string;
   id: string;
 }
+interface NecessaryDataPeople {
+  name: string;
+  role: string;
+  gender: string;
+  poster: string;
+  id: string;
+}
