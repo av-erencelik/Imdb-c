@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <Box as="footer" bg="blackAlpha.800" p="3">
       <Container maxW="container.xl" px={{ base: 0, md: 4 }}>
-        <Flex justifyContent="space-between">
+        <Flex justifyContent="space-between" flexDirection={{ base: "column", md: "row" }} alignItems="center" gap="3">
           <Flex alignItems="center">
             <Text color="yellow.400">Created With </Text>
             <Link href="https://www.themoviedb.org/documentation/api" color="yellow.400" pl="2">
