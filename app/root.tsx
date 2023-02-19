@@ -8,6 +8,7 @@ import { Menu } from "./menuStyling";
 import stylesSlick from "slick-carousel/slick/slick.css";
 import stylesSlickTheme from "slick-carousel/slick/slick-theme.css";
 import global from "../app/styles/global.css";
+import Footer from "./components/Footer";
 const theme = extendTheme({
   fonts: {
     body: `'Hind'`,
@@ -48,6 +49,7 @@ export default function App() {
       <ChakraProvider theme={theme}>
         <Navbar />
         <Outlet />
+        <Footer />
       </ChakraProvider>
     </Document>
   );
