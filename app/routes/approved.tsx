@@ -1,4 +1,5 @@
 import { type LoaderArgs, redirect } from "@remix-run/node";
+import { createUserSession } from "~/auth.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -21,5 +22,5 @@ export const loader = async ({ request }: LoaderArgs) => {
     }
   );
   const data = await response.json();
-  console.log(data);
+  return createUserSession(data.session_id);
 };

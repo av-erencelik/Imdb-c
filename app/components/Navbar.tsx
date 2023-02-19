@@ -5,6 +5,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Avatar,
   Box,
   Button,
   Container,
@@ -31,7 +32,8 @@ import { useState } from "react";
 import Logo from "../../public/logo.png";
 import { Link as ChakraLink } from "@chakra-ui/react";
 
-const Navbar = () => {
+const Navbar = ({ user }: { user: any }) => {
+  console.log(user);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isSearching, setIsSearching] = useState(false);
   return (
@@ -252,17 +254,32 @@ const Navbar = () => {
                 <MenuItem px={"6"}>Lorem</MenuItem>
               </MenuList>
             </Menu>
-            <Link to="/login">
-              <Button
-                bg="transparent"
-                color="yellow.400"
-                _hover={{ bg: "black" }}
-                _active={{ bg: "black" }}
-                px={{ base: 2, md: 4 }}
-              >
-                Login
-              </Button>
-            </Link>
+            {!user ? (
+              <Link to="/login">
+                <Button
+                  bg="transparent"
+                  color="yellow.400"
+                  _hover={{ bg: "black" }}
+                  _active={{ bg: "black" }}
+                  px={{ base: 2, md: 4 }}
+                >
+                  Login
+                </Button>
+              </Link>
+            ) : (
+              <Menu>
+                <MenuButton as={Button} bg="transparent" _hover={{ bg: "transparent" }} _active={{ bg: "transparent" }}>
+                  <Avatar
+                    src={`https://secure.gravatar.com/avatar/${user.avatar.gravatar.hash}.jpg?s=64`}
+                    size="sm"
+                  ></Avatar>
+                </MenuButton>
+                <MenuList minWidth={"150px"}>
+                  <MenuItem px={"6"}>Lorem</MenuItem>
+                  <MenuItem px={"6"}>Lorem</MenuItem>
+                </MenuList>
+              </Menu>
+            )}
           </Box>
         </Flex>
       </Container>
