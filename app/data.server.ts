@@ -29,13 +29,14 @@ export function returnNecessaryTvData(data: any) {
 export function returnNecessaryPeople(data: any) {
   const necessaryData = [] as NecessaryDataPeople[];
 
-  data.results.forEach((people: any) => {
+  data.forEach((people: any) => {
     necessaryData.push({
       name: people.name,
       role: people.known_for_department,
       gender: people.gender === 1 ? "female" : "male",
       poster: people.profile_path,
       id: people.id,
+      character: people.character ? people.character : "",
     });
   });
   return necessaryData;

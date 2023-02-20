@@ -3,8 +3,12 @@ import { Box, Card, CardBody, CardFooter, Container, Flex, Image, Skeleton, Text
 import { Link } from "@remix-run/react";
 import { useRef } from "react";
 import Slider from "react-slick";
-export default function SimpleSlider(props: { title: string; movies: NecessaryData[] | NecessaryDataPeople[] }) {
-  const { movies, title } = props;
+export default function SimpleSlider(props: {
+  title: string;
+  movies: NecessaryData[] | NecessaryDataPeople[];
+  type: string;
+}) {
+  const { movies, title, type } = props;
   const slider = useRef(null);
   let settings = {
     dots: false,
@@ -52,7 +56,7 @@ export default function SimpleSlider(props: { title: string; movies: NecessaryDa
       <Slider {...settings} ref={slider}>
         {movies.map((movie: NecessaryData | NecessaryDataPeople, index: number) => (
           <Card maxW="175px" h="285px" overflow="hidden" cursor="pointer" key={index} className="hover">
-            <Link to={`/${movie.id}`}>
+            <Link to={`/${type}/${movie.id}`}>
               <CardBody p="0">
                 <Image
                   src={`https://image.tmdb.org/t/p/original${movie.poster}`}
@@ -85,6 +89,8 @@ export default function SimpleSlider(props: { title: string; movies: NecessaryDa
                         year: "numeric",
                       })}
                     </Text>
+                  ) : movie.character ? (
+                    <Text fontSize="sm">{movie.character}</Text>
                   ) : (
                     <Text fontSize="sm">
                       {movie.role === "Acting" ? (movie.gender === "female" ? "Actress" : "Actor") : "Director"}

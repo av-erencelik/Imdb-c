@@ -1,5 +1,7 @@
+import { Text } from "@chakra-ui/react";
+
 const New = () => {
-  return <div>New</div>;
+  return <Text>Deneme</Text>;
 };
 
 export default New;

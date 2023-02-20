@@ -22,3 +22,15 @@
   scale: 1.05;
   transition: all 0.5s;
 }
+.remix-link:hover {
+  text-decoration: underline;
+}
+.on {
+  color: #ecc94b;
+}
+.off {
+  color: #ccc;
+}
+.star {
+  font-size: 20px;
+}

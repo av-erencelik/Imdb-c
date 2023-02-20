@@ -11,4 +11,5 @@ interface NecessaryDataPeople {
   gender: string;
   poster: string;
   id: string;
+  character: string;
 }

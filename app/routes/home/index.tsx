@@ -20,7 +20,7 @@ export const loader = async () => {
     `https://api.themoviedb.org/3/trending/person/week?api_key=${process.env.API_KEY}`
   );
   let featuredPeople = await responseFeaturedPeople.json();
-  featuredPeople = returnNecessaryPeople(featuredPeople);
+  featuredPeople = returnNecessaryPeople(featuredPeople.results);
   return json({ featuredMovies, featuredTvShows, featuredPeople });
 };
 
@@ -29,10 +29,10 @@ const Home = () => {
   return (
     <>
       <MainImage />
-      <SimpleSlider movies={featuredMovies} title={"Featured Movies"} />
-      <SimpleSlider movies={featuredTvShows} title={"Featured TV Shows"} />
+      <SimpleSlider movies={featuredMovies} title={"Featured Movies"} type="movie" />
+      <SimpleSlider movies={featuredTvShows} title={"Featured TV Shows"} type="tvshow" />
       <PeopleImage />
-      <SimpleSlider movies={featuredPeople} title={"Featured People"} />
+      <SimpleSlider movies={featuredPeople} title={"Featured People"} type="people" />
     </>
   );
 };
