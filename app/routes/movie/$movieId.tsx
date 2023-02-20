@@ -22,6 +22,7 @@ import { MdWatchLater } from "react-icons/md";
 import StarRating from "~/components/StarRating";
 import { returnNecessaryPeople } from "~/data.server";
 import SimpleSlider from "~/components/MovieSlider";
+import VideoSlider from "~/components/VideoSlider";
 var Vibrant = require("node-vibrant");
 var tinycolor = require("tinycolor2");
 
@@ -188,8 +189,9 @@ const MovieDetails = () => {
           </Container>
         </Box>
       </Box>
-      <Container maxW="container.xl">
+      <Container maxW="container.xl" mb="10">
         <SimpleSlider title="Cast" movies={cast} type="people" />
+        <VideoSlider videos={movie.videos.results.filter((video: Video) => video.site !== "Youtube")} />
       </Container>
     </Box>
   );
