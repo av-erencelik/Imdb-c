@@ -260,6 +260,56 @@ const MovieDetails = () => {
         <SimpleSlider title="Cast" movies={cast} type="people" />
         <VideoSlider videos={movie.videos.results.filter((video: Video) => video.site !== "Youtube")} />
       </Container>
+      <Flex
+        display={{ base: "flex", md: "none" }}
+        position="fixed"
+        left="0"
+        bottom="0"
+        bg="blackAlpha.800"
+        color="white"
+        zIndex="100"
+        w="full"
+        justifyContent="space-around"
+        px="5"
+      >
+        <IconButton
+          icon={<AiFillHeart />}
+          aria-label="mobile fav"
+          size="md"
+          bg="transparent"
+          borderRadius="full"
+          _hover={{ bg: "transparent" }}
+          _active={{ bg: "transparent" }}
+        />
+        <IconButton
+          icon={<MdWatchLater />}
+          aria-label="mobile fav"
+          size="md"
+          bg="transparent"
+          borderRadius="full"
+          _hover={{ bg: "transparent" }}
+          _active={{ bg: "transparent" }}
+        />
+        <Menu offset={[64, 4]}>
+          <Tooltip label="Rate it" hasArrow openDelay={250} letterSpacing="wide">
+            <MenuButton
+              as={IconButton}
+              icon={<StarIcon />}
+              bg="transparent"
+              size={"md"}
+              fontSize="15px"
+              color="white"
+              aria-label="fav"
+              borderRadius="full"
+              _hover={{ bg: "transparent" }}
+              _active={{ bg: "transparent" }}
+            ></MenuButton>
+          </Tooltip>
+          <MenuList minWidth={"150px"} bg="blackAlpha.800" border="none">
+            <StarRating />
+          </MenuList>
+        </Menu>
+      </Flex>
     </Box>
   );
 };
