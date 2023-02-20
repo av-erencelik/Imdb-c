@@ -68,6 +68,7 @@ export default function SimpleSlider(props: {
                       <Box h="200px" w="100%"></Box>
                     </Skeleton>
                   }
+                  loading="lazy"
                 />
               </CardBody>
               <CardFooter display="block" p="2">
