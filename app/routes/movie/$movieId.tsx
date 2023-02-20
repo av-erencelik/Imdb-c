@@ -169,19 +169,20 @@ const MovieDetails = () => {
                 <Text>{movie.overview}</Text>
               </Box>
               <Flex gap="3" w="50px" alignItems="flex-end">
-                {movie["watch/providers"].results.US.flatrate.map(
-                  (provider: { logo_path: string; provider_name: string; provider_id: string }) => {
-                    return (
-                      <Tooltip key={provider.provider_id} label={provider.provider_name}>
-                        <Image
-                          src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
-                          borderRadius="xl"
-                          cursor="pointer"
-                        ></Image>
-                      </Tooltip>
-                    );
-                  }
-                )}
+                {movie["watch/providers"].results.US.flatrate &&
+                  movie["watch/providers"].results.US.flatrate.map(
+                    (provider: { logo_path: string; provider_name: string; provider_id: string }) => {
+                      return (
+                        <Tooltip key={provider.provider_id} label={provider.provider_name}>
+                          <Image
+                            src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
+                            borderRadius="xl"
+                            cursor="pointer"
+                          ></Image>
+                        </Tooltip>
+                      );
+                    }
+                  )}
               </Flex>
             </Box>
           </Container>
