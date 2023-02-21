@@ -3,6 +3,7 @@ import { Box, Card, CardBody, CardFooter, Container, Flex, Image, Skeleton, Text
 import { Link } from "@remix-run/react";
 import { useRef } from "react";
 import Slider from "react-slick";
+import defaultPP from "../../public/default.jpg";
 export default function SimpleSlider(props: {
   title: string;
   movies: NecessaryData[] | NecessaryDataPeople[];
@@ -12,7 +13,7 @@ export default function SimpleSlider(props: {
   const slider = useRef(null);
   let settings = {
     dots: false,
-    infinite: true,
+    infinite: movies.length > 7,
     speed: 500,
     slidesToShow: 7,
     slidesToScroll: 4,
@@ -59,7 +60,7 @@ export default function SimpleSlider(props: {
             <Link to={`/${type}/${movie.id}`}>
               <CardBody p="0">
                 <Image
-                  src={`https://image.tmdb.org/t/p/original${movie.poster}`}
+                  src={movie.poster ? `https://image.tmdb.org/t/p/original${movie.poster}` : defaultPP}
                   w="100%"
                   objectFit={"cover"}
                   maxH="200px"
@@ -68,6 +69,7 @@ export default function SimpleSlider(props: {
                       <Box h="200px" w="100%"></Box>
                     </Skeleton>
                   }
+                  fallbackSrc="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
                   loading="lazy"
                 />
               </CardBody>

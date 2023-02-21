@@ -1,39 +1,56 @@
 import { StarIcon } from "@chakra-ui/icons";
-import { Box, Container, Flex, Image, Text, IconButton, Tooltip, Menu, MenuButton, MenuList } from "@chakra-ui/react";
-import { type LoaderArgs, json, type Request } from "@remix-run/node";
+import {
+  Box,
+  Container,
+  Flex,
+  IconButton,
+  Image,
+  Menu,
+  MenuButton,
+  MenuList,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
+import { json, type LoaderArgs, type Request } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { CgFormatSlash } from "react-icons/cg";
-import { getUserFromSession } from "~/auth.server";
 import { AiFillHeart } from "react-icons/ai";
+import { CgFormatSlash } from "react-icons/cg";
 import { MdWatchLater } from "react-icons/md";
-import StarRating from "~/components/StarRating";
-import { returnNecessaryPeople } from "~/data.server";
+import { getUserFromSession } from "~/auth.server";
 import SimpleSlider from "~/components/MovieSlider";
+import StarRating from "~/components/StarRating";
 import VideoSlider from "~/components/VideoSlider";
+import { returnNecessaryPeople } from "~/data.server";
 var Vibrant = require("node-vibrant");
 var tinycolor = require("tinycolor2");
-
 export async function loader({ params, request }: LoaderArgs) {
-  const id = params.movieId;
+  const id = params.tvShowId;
   const sessionId = await getUserFromSession(request as Request);
-  const responseMovieDetails = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}&session_id=${sessionId}&US&append_to_response=credits,videos,account_states,watch/providers`
+  const responseTvShowDetails = await fetch(
+    `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}&session_id=${sessionId}&US&append_to_response=credits,videos,account_states,watch/providers`
   );
-  const movieDetails = await responseMovieDetails.json();
-  await Vibrant.from(`https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}`)
+  const tvShowDetails = await responseTvShowDetails.json();
+  console.log(tvShowDetails);
+  await Vibrant.from(`https://image.tmdb.org/t/p/original${tvShowDetails.backdrop_path}`)
     .getPalette()
     .then(
       (palette: any) =>
-        (movieDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
+        (tvShowDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
     );
-  const color = tinycolor(movieDetails.colorRgb);
-  const cast = returnNecessaryPeople(movieDetails.credits.cast);
-  movieDetails.isLight = color.isLight();
-  return json({ movie: movieDetails, cast });
+  const color = tinycolor(tvShowDetails.colorRgb);
+  const cast = returnNecessaryPeople(tvShowDetails.credits.cast);
+  tvShowDetails.isLight = color.isLight();
+  return json({ movie: tvShowDetails, cast });
 }
 
-const MovieDetails = () => {
+const TvShowDetails = () => {
   const { movie, cast } = useLoaderData<typeof loader>();
+  console.log(movie);
   return (
     <Box as="main">
       <Box
@@ -59,11 +76,11 @@ const MovieDetails = () => {
             >
               <Box>
                 <Text as="h2" fontSize="2xl">
-                  <b>{movie.title}</b> ({new Date(movie.release_date).getFullYear()})
+                  <b>{movie.name}</b> ({new Date(movie.first_air_date).getFullYear()})
                 </Text>
                 <Flex alignItems="center">
                   <Text>
-                    {new Date(movie.release_date).toLocaleString("en-US", {
+                    {new Date(movie.first_air_date).toLocaleString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
@@ -82,8 +99,21 @@ const MovieDetails = () => {
                   })}
                   <CgFormatSlash size="1.3em" />
                   <Text>
-                    {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m
+                    {Math.floor(movie.episode_run_time[0] / 60)}h {movie.episode_run_time[0] % 60}m
                   </Text>
+                  {movie.next_episode_to_air && (
+                    <>
+                      <CgFormatSlash size="1.3em" />
+                      <Text>
+                        Next Ep:{" "}
+                        {new Date(movie.next_episode_to_air.air_date).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </Text>
+                    </>
+                  )}
                 </Flex>
               </Box>
               <Flex gap="5" alignItems="center">
@@ -155,7 +185,7 @@ const MovieDetails = () => {
                 </Text>
                 <Text>{movie.overview}</Text>
               </Box>
-              <Flex gap="3" w="50px" alignItems="flex-end">
+              <Flex gap="3" w="50px">
                 {movie["watch/providers"].results.US.flatrate &&
                   movie["watch/providers"].results.US.flatrate.map(
                     (provider: { logo_path: string; provider_name: string; provider_id: string }) => {
@@ -185,11 +215,11 @@ const MovieDetails = () => {
         >
           <Box>
             <Text as="h2" fontSize="2xl" textAlign="center">
-              <b>{movie.title}</b> ({new Date(movie.release_date).getFullYear()})
+              <b>{movie.name}</b> ({new Date(movie.first_air_date).getFullYear()})
             </Text>
             <Flex alignItems="center" flexWrap="wrap" textAlign="center" justifyContent="center">
               <Text>
-                {new Date(movie.release_date).toLocaleString("en-US", {
+                {new Date(movie.first_air_date).toLocaleString("en-US", {
                   month: "short",
                   day: "numeric",
                   year: "numeric",
@@ -208,7 +238,7 @@ const MovieDetails = () => {
               })}
               <CgFormatSlash size="1.3em" />
               <Text>
-                {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m
+                {Math.floor(movie.episode_run_time / 60)}h {movie.episode_run_time % 60}m
               </Text>
             </Flex>
           </Box>
@@ -237,7 +267,7 @@ const MovieDetails = () => {
             </Text>
             <Text textAlign="center">{movie.overview}</Text>
           </Box>
-          <Flex gap="3" w="50px" alignItems="flex-end">
+          <Flex gap="3" flexWrap="wrap" flexDirection="row" justifyContent="center">
             {movie["watch/providers"].results.US.flatrate &&
               movie["watch/providers"].results.US.flatrate.map(
                 (provider: { logo_path: string; provider_name: string; provider_id: string }) => {
@@ -247,6 +277,7 @@ const MovieDetails = () => {
                         src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
                         borderRadius="xl"
                         cursor="pointer"
+                        w="50px"
                       ></Image>
                     </Tooltip>
                   );
@@ -309,8 +340,66 @@ const MovieDetails = () => {
           </MenuList>
         </Menu>
       </Flex>
+      <Container maxW="container.xl">
+        <Tabs variant="line">
+          <TabList flexWrap={"wrap"}>
+            {movie.seasons.map((season: Season) => {
+              if (season.season_number) {
+                return (
+                  <Tab key={season.id} _selected={{ color: "yellow.400", borderColor: "yellow.400" }}>
+                    {season.season_number}
+                  </Tab>
+                );
+              }
+              return null;
+            })}
+          </TabList>
+          <TabPanels>
+            {movie.seasons.map((season: Season) => {
+              if (season.season_number) {
+                return (
+                  <TabPanel key={season.id + season.name} px="0">
+                    <Flex
+                      borderRadius="xl"
+                      overflow="hidden"
+                      gap="5"
+                      alignItems="center"
+                      border="1px"
+                      borderColor="gray.200"
+                      pr="4"
+                    >
+                      <Image src={`https://image.tmdb.org/t/p/original${season.poster_path}`} h="200px"></Image>
+                      <Box>
+                        <Text fontWeight="bold" fontSize={{ base: "lg", md: "2xl" }} noOfLines={1}>
+                          {season.name}
+                        </Text>
+                        <Text fontWeight="bold">
+                          {new Date(season.air_date).getFullYear()} | {season.episode_count} Episodes
+                        </Text>
+                        {season.overview ? (
+                          <Text noOfLines={5}>{season.overview}</Text>
+                        ) : (
+                          <Text>
+                            This season aired on{" "}
+                            {new Date(season.air_date).toLocaleString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </Text>
+                        )}
+                      </Box>
+                    </Flex>
+                  </TabPanel>
+                );
+              }
+              return null;
+            })}
+          </TabPanels>
+        </Tabs>
+      </Container>
     </Box>
   );
 };
 
-export default MovieDetails;
+export default TvShowDetails;
