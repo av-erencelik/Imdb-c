@@ -22,7 +22,7 @@ const StarRating = ({ isRated = 0 }: { isRated?: number }) => {
         isClosable: true,
         duration: 1000,
       });
-    } else if (fetcher.state === "idle" && rating) {
+    } else if (fetcher.state === "idle" && rating && !fetcher.data.error) {
       toast({
         position: "top",
         title: `Your rating saved`,
@@ -30,7 +30,7 @@ const StarRating = ({ isRated = 0 }: { isRated?: number }) => {
         isClosable: true,
         duration: 1000,
       });
-    } else {
+    } else if (fetcher.state === "idle" && !fetcher.data.error) {
       toast({
         position: "top",
         title: `Removed your rating`,
@@ -40,6 +40,18 @@ const StarRating = ({ isRated = 0 }: { isRated?: number }) => {
       });
     }
   }, [fetcher.state]);
+  useEffect(() => {
+    if (fetcher.data && fetcher.data.error) {
+      toast({
+        position: "top",
+        title: "Something Happened",
+        description: "Please try again later",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
+  }, [fetcher.data]);
   const rate = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e.currentTarget.id === `${rating}`) {
       return;

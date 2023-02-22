@@ -50,15 +50,16 @@ export async function loader({ params, request }: LoaderArgs) {
 }
 export async function action({ request, params }: LoaderArgs) {
   const formData = await request.formData();
+  let status;
   if (formData.get("type") === "favorites") {
-    const status = await postFavorite({ request, params } as LoaderArgs, formData);
+    status = await postFavorite({ request, params } as LoaderArgs, formData);
   } else if (formData.get("type") === "watchlist") {
-    const status = await postAddWatchList({ request, params } as LoaderArgs, formData);
+    status = await postAddWatchList({ request, params } as LoaderArgs, formData);
   } else if (formData.get("type") === "rate") {
-    const status = await rate({ request, params } as LoaderArgs, formData);
+    status = await rate({ request, params } as LoaderArgs, formData);
   }
 
-  return json({ message: "success" });
+  return json(status);
 }
 const TvShowDetails = () => {
   const { movie, cast } = useLoaderData<typeof loader>();

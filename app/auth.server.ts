@@ -63,8 +63,11 @@ export async function postFavorite({ request, params }: LoaderArgs, form: FormDa
       }),
     }
   );
-
-  return true;
+  const status = await response.json();
+  if (!status.success) {
+    return { error: status.status_message };
+  }
+  return status;
 }
 export async function postAddWatchList({ request, params }: LoaderArgs, form: FormData) {
   const url = new URL(request.url);
@@ -78,7 +81,7 @@ export async function postAddWatchList({ request, params }: LoaderArgs, form: Fo
   const sessionId = await getUserFromSession(request as Request);
   const user = await getUserInfos(request as Request);
 
-  await fetch(
+  const response = await fetch(
     `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${process.env.API_KEY}&session_id=${sessionId}`,
     {
       method: "POST",
@@ -92,7 +95,11 @@ export async function postAddWatchList({ request, params }: LoaderArgs, form: Fo
       }),
     }
   );
-  return true;
+  const status = await response.json();
+  if (!status.success) {
+    return { error: status.status_message };
+  }
+  return status;
 }
 export async function rate({ request, params }: LoaderArgs, form: FormData) {
   const url = new URL(request.url);
@@ -105,9 +112,9 @@ export async function rate({ request, params }: LoaderArgs, form: FormData) {
 
   const sessionId = await getUserFromSession(request as Request);
 
-  console.log(request.method);
+  let response;
   if (request.method === "POST") {
-    await fetch(
+    response = await fetch(
       `https://api.themoviedb.org/3/${url.pathname.split("/")[1]}/${id}/rating?api_key=${
         process.env.API_KEY
       }&session_id=${sessionId}`,
@@ -122,7 +129,7 @@ export async function rate({ request, params }: LoaderArgs, form: FormData) {
       }
     );
   } else {
-    const response = await fetch(
+    response = await fetch(
       `https://api.themoviedb.org/3/${url.pathname.split("/")[1]}/${id}/rating?api_key=${
         process.env.API_KEY
       }&session_id=${sessionId}`,
@@ -134,5 +141,9 @@ export async function rate({ request, params }: LoaderArgs, form: FormData) {
       }
     );
   }
-  return true;
+  const status = await response.json();
+  if (!status.success) {
+    return { error: status.status_message };
+  }
+  return status;
 }

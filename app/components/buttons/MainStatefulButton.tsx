@@ -21,6 +21,19 @@ const MainStatefulButton = ({
   const toast = useToast();
   const isFirstRender = useFirstRender();
   useEffect(() => {
+    if (fetcher.data && fetcher.data.error) {
+      toast({
+        position: "top",
+        title: "Something Happened",
+        description: "Please try again later",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
+  }, [fetcher.data]);
+
+  useEffect(() => {
     if (isFirstRender || fetcher.state === "loading") {
       return;
     }
@@ -32,7 +45,7 @@ const MainStatefulButton = ({
         isClosable: true,
         duration: 1000,
       });
-    } else if (fetcher.state === "idle" && added) {
+    } else if (fetcher.state === "idle" && added && !fetcher.data.error) {
       toast({
         position: "top",
         title: `Added to ${type}`,
@@ -40,7 +53,7 @@ const MainStatefulButton = ({
         isClosable: true,
         duration: 1000,
       });
-    } else {
+    } else if (fetcher.state === "idle" && !fetcher.data.error) {
       toast({
         position: "top",
         title: `Removed from ${type}`,
