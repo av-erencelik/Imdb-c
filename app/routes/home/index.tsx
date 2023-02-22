@@ -30,7 +30,7 @@ const Home = () => {
     <>
       <MainImage />
       <SimpleSlider movies={featuredMovies} title={"Featured Movies"} type="movie" />
-      <SimpleSlider movies={featuredTvShows} title={"Featured TV Shows"} type="tvshow" />
+      <SimpleSlider movies={featuredTvShows} title={"Featured TV Shows"} type="tv" />
       <PeopleImage />
       <SimpleSlider movies={featuredPeople} title={"Featured People"} type="people" />
     </>

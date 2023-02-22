@@ -1,4 +1,4 @@
-import { createCookieSessionStorage, redirect, Request } from "@remix-run/node";
+import { createCookieSessionStorage, redirect, Request, LoaderArgs } from "@remix-run/node";
 
 const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -25,4 +25,114 @@ export async function getUserFromSession(request: Request) {
     return null;
   }
   return sessionId;
+}
+export async function getUserInfos(request: Request) {
+  const sessionId = await getUserFromSession(request);
+  if (!sessionId) {
+    return null;
+  }
+  const userResponse = await fetch(
+    `https://api.themoviedb.org/3/account?api_key=${process.env.API_KEY}&session_id=${sessionId}`
+  );
+  const user = await userResponse.json();
+  return user;
+}
+export async function postFavorite({ request, params }: LoaderArgs, form: FormData) {
+  const url = new URL(request.url);
+  let id;
+  if (url.pathname.split("/")[1] === "movie") {
+    id = params.movieId;
+  } else {
+    id = params.tvShowId;
+  }
+
+  const sessionId = await getUserFromSession(request as Request);
+  const user = await getUserInfos(request as Request);
+
+  const response = await fetch(
+    `https://api.themoviedb.org/3/account/${user.id}/favorite?api_key=${process.env.API_KEY}&session_id=${sessionId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        media_type: url.pathname.split("/")[1],
+        media_id: id,
+        favorite: form.get("fav") === "true" ? false : true,
+      }),
+    }
+  );
+
+  return true;
+}
+export async function postAddWatchList({ request, params }: LoaderArgs, form: FormData) {
+  const url = new URL(request.url);
+  let id;
+  if (url.pathname.split("/")[1] === "movie") {
+    id = params.movieId;
+  } else {
+    id = params.tvShowId;
+  }
+
+  const sessionId = await getUserFromSession(request as Request);
+  const user = await getUserInfos(request as Request);
+
+  await fetch(
+    `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${process.env.API_KEY}&session_id=${sessionId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        media_type: url.pathname.split("/")[1],
+        media_id: id,
+        watchlist: form.get("fav") === "true" ? false : true,
+      }),
+    }
+  );
+  return true;
+}
+export async function rate({ request, params }: LoaderArgs, form: FormData) {
+  const url = new URL(request.url);
+  let id;
+  if (url.pathname.split("/")[1] === "movie") {
+    id = params.movieId;
+  } else {
+    id = params.tvShowId;
+  }
+
+  const sessionId = await getUserFromSession(request as Request);
+
+  console.log(request.method);
+  if (request.method === "POST") {
+    await fetch(
+      `https://api.themoviedb.org/3/${url.pathname.split("/")[1]}/${id}/rating?api_key=${
+        process.env.API_KEY
+      }&session_id=${sessionId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          value: form.get("value"),
+        }),
+      }
+    );
+  } else {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/${url.pathname.split("/")[1]}/${id}/rating?api_key=${
+        process.env.API_KEY
+      }&session_id=${sessionId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+  return true;
 }

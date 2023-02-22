@@ -9,7 +9,7 @@ import stylesSlick from "slick-carousel/slick/slick.css";
 import stylesSlickTheme from "slick-carousel/slick/slick-theme.css";
 import global from "../app/styles/global.css";
 import Footer from "./components/Footer";
-import { getUserFromSession } from "./auth.server";
+import { getUserFromSession, getUserInfos } from "./auth.server";
 const theme = extendTheme({
   fonts: {
     body: `'Hind'`,
@@ -95,14 +95,6 @@ export function links() {
   ];
 }
 export async function loader({ request }: { request: Request }) {
-  const sessionId = await getUserFromSession(request);
-  if (!sessionId) {
-    return null;
-  }
-  const userResponse = await fetch(
-    `https://api.themoviedb.org/3/account?api_key=${process.env.API_KEY}&session_id=${sessionId}`
-  );
-  console.log(`https://api.themoviedb.org/3/account?api_key=${process.env.API_KEY}&session_id=${sessionId}`);
-  const user = await userResponse.json();
+  const user = await getUserInfos(request);
   return json({ user });
 }

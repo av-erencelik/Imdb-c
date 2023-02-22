@@ -3,13 +3,14 @@ import { Box, Container, Flex, Image, Text, IconButton, Tooltip, Menu, MenuButto
 import { type LoaderArgs, json, type Request } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { CgFormatSlash } from "react-icons/cg";
-import { getUserFromSession } from "~/auth.server";
+import { getUserFromSession, postAddWatchList, postFavorite, rate } from "~/auth.server";
 import { AiFillHeart } from "react-icons/ai";
 import { MdWatchLater } from "react-icons/md";
 import StarRating from "~/components/StarRating";
 import { returnNecessaryPeople } from "~/data.server";
 import SimpleSlider from "~/components/MovieSlider";
 import VideoSlider from "~/components/VideoSlider";
+import MainStatefulButton from "~/components/buttons/MainStatefulButton";
 var Vibrant = require("node-vibrant");
 var tinycolor = require("tinycolor2");
 
@@ -30,6 +31,18 @@ export async function loader({ params, request }: LoaderArgs) {
   const cast = returnNecessaryPeople(movieDetails.credits.cast);
   movieDetails.isLight = color.isLight();
   return json({ movie: movieDetails, cast });
+}
+export async function action({ request, params }: LoaderArgs) {
+  const formData = await request.formData();
+  if (formData.get("type") === "favorites") {
+    const status = await postFavorite({ request, params } as LoaderArgs, formData);
+  } else if (formData.get("type") === "watchlist") {
+    const status = await postAddWatchList({ request, params } as LoaderArgs, formData);
+  } else if (formData.get("type") === "rate") {
+    const status = await rate({ request, params } as LoaderArgs, formData);
+  }
+
+  return json({ message: "success" });
 }
 
 const MovieDetails = () => {
@@ -101,30 +114,18 @@ const MovieDetails = () => {
                   <StarIcon color="yellow.400" boxSize={5} />
                   {Number(movie.vote_average).toFixed(1)}
                 </Box>
-                <Tooltip label="Add to favourites" hasArrow openDelay={250} letterSpacing="wide">
-                  <IconButton
-                    icon={<AiFillHeart />}
-                    bg="blackAlpha.800"
-                    size={"md"}
-                    fontSize="15px"
-                    color="white"
-                    aria-label="fav"
-                    borderRadius="full"
-                    _hover={{ bg: "blackAlpha.700" }}
-                  ></IconButton>
-                </Tooltip>
-                <Tooltip label="Watch Later" hasArrow openDelay={250} letterSpacing="wide">
-                  <IconButton
-                    icon={<MdWatchLater />}
-                    bg="blackAlpha.800"
-                    size={"md"}
-                    fontSize="15px"
-                    color="white"
-                    aria-label="fav"
-                    borderRadius="full"
-                    _hover={{ bg: "blackAlpha.700" }}
-                  ></IconButton>
-                </Tooltip>
+                <MainStatefulButton
+                  added={movie.account_states.favorite}
+                  Icon={AiFillHeart}
+                  type="favorites"
+                  label="Add to favorites"
+                />
+                <MainStatefulButton
+                  added={movie.account_states.watchlist}
+                  Icon={MdWatchLater}
+                  type="watchlist"
+                  label="Watch later"
+                />
 
                 <Menu>
                   <Tooltip label="Rate it" hasArrow openDelay={250} letterSpacing="wide">
@@ -134,7 +135,7 @@ const MovieDetails = () => {
                       bg="blackAlpha.800"
                       size={"md"}
                       fontSize="15px"
-                      color="white"
+                      color={movie.account_states.rated ? "yellow.400" : "white"}
                       aria-label="fav"
                       borderRadius="full"
                       _hover={{ bg: "blackAlpha.700" }}
@@ -142,7 +143,7 @@ const MovieDetails = () => {
                     ></MenuButton>
                   </Tooltip>
                   <MenuList minWidth={"150px"} bg="blackAlpha.800" border="none">
-                    <StarRating />
+                    <StarRating isRated={movie.account_states.rated ? movie.account_states.rated.value : 0} />
                   </MenuList>
                 </Menu>
               </Flex>
@@ -156,7 +157,8 @@ const MovieDetails = () => {
                 <Text>{movie.overview}</Text>
               </Box>
               <Flex gap="3" w="50px" alignItems="flex-end">
-                {movie["watch/providers"].results.US.flatrate &&
+                {movie["watch/providers"].results.US &&
+                  movie["watch/providers"].results.US.flatrate &&
                   movie["watch/providers"].results.US.flatrate.map(
                     (provider: { logo_path: string; provider_name: string; provider_id: string }) => {
                       return (
@@ -238,7 +240,8 @@ const MovieDetails = () => {
             <Text textAlign="center">{movie.overview}</Text>
           </Box>
           <Flex gap="3" w="50px" alignItems="flex-end">
-            {movie["watch/providers"].results.US.flatrate &&
+            {movie["watch/providers"].results.US &&
+              movie["watch/providers"].results.US.flatrate &&
               movie["watch/providers"].results.US.flatrate.map(
                 (provider: { logo_path: string; provider_name: string; provider_id: string }) => {
                   return (
@@ -271,23 +274,19 @@ const MovieDetails = () => {
         justifyContent="space-around"
         px="5"
       >
-        <IconButton
-          icon={<AiFillHeart />}
-          aria-label="mobile fav"
-          size="md"
+        <MainStatefulButton
+          added={movie.account_states.favorite}
+          Icon={AiFillHeart}
+          type="favorites"
+          label="Add to favorites"
           bg="transparent"
-          borderRadius="full"
-          _hover={{ bg: "transparent" }}
-          _active={{ bg: "transparent" }}
         />
-        <IconButton
-          icon={<MdWatchLater />}
-          aria-label="mobile fav"
-          size="md"
+        <MainStatefulButton
+          added={movie.account_states.watchlist}
+          Icon={MdWatchLater}
+          type="watchlist"
+          label="Watch later"
           bg="transparent"
-          borderRadius="full"
-          _hover={{ bg: "transparent" }}
-          _active={{ bg: "transparent" }}
         />
         <Menu offset={[64, 4]}>
           <Tooltip label="Rate it" hasArrow openDelay={250} letterSpacing="wide">
@@ -297,7 +296,7 @@ const MovieDetails = () => {
               bg="transparent"
               size={"md"}
               fontSize="15px"
-              color="white"
+              color={movie.account_states.rated ? "yellow.400" : "white"}
               aria-label="fav"
               borderRadius="full"
               _hover={{ bg: "transparent" }}
@@ -305,7 +304,7 @@ const MovieDetails = () => {
             ></MenuButton>
           </Tooltip>
           <MenuList minWidth={"150px"} bg="blackAlpha.800" border="none">
-            <StarRating />
+            <StarRating isRated={movie.account_states.rated ? movie.account_states.rated.value : 0} />
           </MenuList>
         </Menu>
       </Flex>
