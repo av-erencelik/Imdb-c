@@ -37,7 +37,7 @@ export async function getUserInfos(request: Request) {
   const user = await userResponse.json();
   return user;
 }
-export async function postFavorite({ request, params }: LoaderArgs, form: FormData) {
+export async function postFavorite({ request, params }: LoaderArgs, form: FormData, sessionId: string) {
   const url = new URL(request.url);
   let id;
   if (url.pathname.split("/")[1] === "movie") {
@@ -45,7 +45,6 @@ export async function postFavorite({ request, params }: LoaderArgs, form: FormDa
   } else {
     id = params.tvShowId;
   }
-  const sessionId = await getUserFromSession(request as Request);
   const response = await fetch(
     `https://api.themoviedb.org/3/account/1/favorite?api_key=${process.env.API_KEY}&session_id=${sessionId}`,
     {
@@ -66,7 +65,7 @@ export async function postFavorite({ request, params }: LoaderArgs, form: FormDa
   }
   return status;
 }
-export async function postAddWatchList({ request, params }: LoaderArgs, form: FormData) {
+export async function postAddWatchList({ request, params }: LoaderArgs, form: FormData, sessionId: string) {
   const url = new URL(request.url);
   let id;
   if (url.pathname.split("/")[1] === "movie") {
@@ -74,8 +73,6 @@ export async function postAddWatchList({ request, params }: LoaderArgs, form: Fo
   } else {
     id = params.tvShowId;
   }
-
-  const sessionId = await getUserFromSession(request as Request);
 
   const response = await fetch(
     `https://api.themoviedb.org/3/account/1/watchlist?api_key=${process.env.API_KEY}&session_id=${sessionId}`,
@@ -97,7 +94,7 @@ export async function postAddWatchList({ request, params }: LoaderArgs, form: Fo
   }
   return status;
 }
-export async function rate({ request, params }: LoaderArgs, form: FormData) {
+export async function rate({ request, params }: LoaderArgs, form: FormData, sessionId: string) {
   const url = new URL(request.url);
   let id;
   if (url.pathname.split("/")[1] === "movie") {
@@ -105,8 +102,6 @@ export async function rate({ request, params }: LoaderArgs, form: FormData) {
   } else {
     id = params.tvShowId;
   }
-
-  const sessionId = await getUserFromSession(request as Request);
 
   let response;
   if (request.method === "POST") {

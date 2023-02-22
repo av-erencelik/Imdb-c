@@ -34,13 +34,17 @@ export async function loader({ params, request }: LoaderArgs) {
 }
 export async function action({ request, params }: LoaderArgs) {
   const formData = await request.formData();
+  const sessionId = await getUserFromSession(request as Request);
+  if (!sessionId) {
+    return json({ userError: "You must be logged in to perform this action" });
+  }
   let status;
   if (formData.get("type") === "favorites") {
-    status = await postFavorite({ request, params } as LoaderArgs, formData);
+    status = await postFavorite({ request, params } as LoaderArgs, formData, sessionId);
   } else if (formData.get("type") === "watchlist") {
-    status = await postAddWatchList({ request, params } as LoaderArgs, formData);
+    status = await postAddWatchList({ request, params } as LoaderArgs, formData, sessionId);
   } else if (formData.get("type") === "rate") {
-    status = await rate({ request, params } as LoaderArgs, formData);
+    status = await rate({ request, params } as LoaderArgs, formData, sessionId);
   }
 
   return json(status);
@@ -116,13 +120,13 @@ const MovieDetails = () => {
                   {Number(movie.vote_average).toFixed(1)}
                 </Box>
                 <MainStatefulButton
-                  added={movie.account_states.favorite}
+                  added={movie.account_states ? movie.account_states.favorite : false}
                   Icon={AiFillHeart}
                   type="favorites"
                   label="Add to favorites"
                 />
                 <MainStatefulButton
-                  added={movie.account_states.watchlist}
+                  added={movie.account_states ? movie.account_states.watchlist : false}
                   Icon={MdWatchLater}
                   type="watchlist"
                   label="Watch later"
@@ -136,7 +140,7 @@ const MovieDetails = () => {
                       bg="blackAlpha.800"
                       size={"md"}
                       fontSize="15px"
-                      color={movie.account_states.rated ? "yellow.400" : "white"}
+                      color={movie.account_states?.rated ? "yellow.400" : "white"}
                       aria-label="fav"
                       borderRadius="full"
                       _hover={{ bg: "blackAlpha.700" }}
@@ -144,7 +148,7 @@ const MovieDetails = () => {
                     ></MenuButton>
                   </Tooltip>
                   <MenuList minWidth={"150px"} bg="blackAlpha.800" border="none">
-                    <StarRating isRated={movie.account_states.rated ? movie.account_states.rated.value : 0} />
+                    <StarRating isRated={movie.account_states?.rated ? movie.account_states.rated.value : 0} />
                   </MenuList>
                 </Menu>
               </Flex>
@@ -276,14 +280,14 @@ const MovieDetails = () => {
         px="5"
       >
         <MainStatefulButton
-          added={movie.account_states.favorite}
+          added={movie.account_states ? movie.account_states.favorite : false}
           Icon={AiFillHeart}
           type="favorites"
           label="Add to favorites"
           bg="transparent"
         />
         <MainStatefulButton
-          added={movie.account_states.watchlist}
+          added={movie.account_states ? movie.account_states.watchlist : false}
           Icon={MdWatchLater}
           type="watchlist"
           label="Watch later"
@@ -297,7 +301,7 @@ const MovieDetails = () => {
               bg="transparent"
               size={"md"}
               fontSize="15px"
-              color={movie.account_states.rated ? "yellow.400" : "white"}
+              color={movie.account_states?.rated ? "yellow.400" : "white"}
               aria-label="fav"
               borderRadius="full"
               _hover={{ bg: "transparent" }}
@@ -305,7 +309,7 @@ const MovieDetails = () => {
             ></MenuButton>
           </Tooltip>
           <MenuList minWidth={"150px"} bg="blackAlpha.800" border="none">
-            <StarRating isRated={movie.account_states.rated ? movie.account_states.rated.value : 0} />
+            <StarRating isRated={movie.account_states?.rated ? movie.account_states.rated.value : 0} />
           </MenuList>
         </Menu>
       </Flex>

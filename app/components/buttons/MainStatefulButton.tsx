@@ -30,11 +30,19 @@ const MainStatefulButton = ({
         isClosable: true,
         duration: 3000,
       });
+    } else if (fetcher.data && fetcher.data.userError) {
+      toast({
+        position: "top",
+        title: fetcher.data.userError,
+        status: "info",
+        isClosable: true,
+        duration: 2000,
+      });
     }
   }, [fetcher.data]);
 
   useEffect(() => {
-    if (isFirstRender || fetcher.state === "loading") {
+    if (isFirstRender || fetcher.state === "loading" || fetcher.data?.userError) {
       return;
     }
     if (fetcher.state === "submitting") {
