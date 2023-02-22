@@ -45,12 +45,9 @@ export async function postFavorite({ request, params }: LoaderArgs, form: FormDa
   } else {
     id = params.tvShowId;
   }
-
   const sessionId = await getUserFromSession(request as Request);
-  const user = await getUserInfos(request as Request);
-
   const response = await fetch(
-    `https://api.themoviedb.org/3/account/${user.id}/favorite?api_key=${process.env.API_KEY}&session_id=${sessionId}`,
+    `https://api.themoviedb.org/3/account/1/favorite?api_key=${process.env.API_KEY}&session_id=${sessionId}`,
     {
       method: "POST",
       headers: {
@@ -79,10 +76,9 @@ export async function postAddWatchList({ request, params }: LoaderArgs, form: Fo
   }
 
   const sessionId = await getUserFromSession(request as Request);
-  const user = await getUserInfos(request as Request);
 
   const response = await fetch(
-    `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${process.env.API_KEY}&session_id=${sessionId}`,
+    `https://api.themoviedb.org/3/account/1/watchlist?api_key=${process.env.API_KEY}&session_id=${sessionId}`,
     {
       method: "POST",
       headers: {
