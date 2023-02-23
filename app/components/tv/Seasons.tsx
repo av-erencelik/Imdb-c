@@ -1,4 +1,5 @@
 import { Box, Container, Flex, Image, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
+import { Link } from "@remix-run/react";
 
 const Seasons = ({ seasons }: { seasons: Season[] }) => {
   return (
@@ -32,9 +33,17 @@ const Seasons = ({ seasons }: { seasons: Season[] }) => {
                   >
                     <Image src={`https://image.tmdb.org/t/p/original${season.poster_path}`} h="200px"></Image>
                     <Box>
-                      <Text fontWeight="bold" fontSize={{ base: "lg", md: "2xl" }} noOfLines={1}>
-                        {season.name}
-                      </Text>
+                      <Link to={`season/${season.season_number}`}>
+                        <Text
+                          fontWeight="bold"
+                          fontSize={{ base: "lg", md: "2xl" }}
+                          noOfLines={1}
+                          _hover={{ textDecoration: "underline" }}
+                        >
+                          {season.name}
+                        </Text>
+                      </Link>
+
                       <Text fontWeight="bold">
                         {new Date(season.air_date).getFullYear()} | {season.episode_count} Episodes
                       </Text>
