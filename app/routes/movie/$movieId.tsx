@@ -1,16 +1,13 @@
-import { StarIcon } from "@chakra-ui/icons";
-import { Box, Container, Flex, IconButton, Tooltip, Menu, MenuButton, MenuList } from "@chakra-ui/react";
+import { Box, Container } from "@chakra-ui/react";
 import { type LoaderArgs, json, type Request } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 import { getUserFromSession, postAddWatchList, postFavorite, rate } from "~/auth.server";
-import { AiFillHeart } from "react-icons/ai";
-import { MdWatchLater } from "react-icons/md";
-import StarRating from "~/components/StarRating";
+
 import { returnNecessaryPeople } from "~/data.server";
 import SimpleSlider from "~/components/MovieSlider";
 import VideoSlider from "~/components/VideoSlider";
-import MainStatefulButton from "~/components/buttons/MainStatefulButton";
+
 import LandingMovieDesktop from "~/components/movie/LandingMovieDesktop";
 import LandingMovieMobile from "~/components/movie/LandingMovieMobile";
 import DetailsStickyFooter from "~/components/common_components/DetailsStickyFooter";
