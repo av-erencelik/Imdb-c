@@ -54,6 +54,11 @@ const VideoSlider = ({ videos }: { videos: Video[] }) => {
           );
         })}
       </Slider>
+      {videos.length === 0 && (
+        <Text textAlign="center" fontSize={{ base: "xl", md: "2xl" }} fontWeight="semibold">
+          No video found for this tv show!
+        </Text>
+      )}
     </>
   );
 };
