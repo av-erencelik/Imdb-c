@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import MainImage from "~/components/MainImage";
@@ -27,13 +28,13 @@ export const loader = async () => {
 const Home = () => {
   const { featuredMovies, featuredTvShows, featuredPeople } = useLoaderData<typeof loader>();
   return (
-    <>
+    <Box as="main">
       <MainImage />
       <SimpleSlider movies={featuredMovies} title={"Featured Movies"} type="movie" />
       <SimpleSlider movies={featuredTvShows} title={"Featured TV Shows"} type="tv" />
       <PeopleImage />
       <SimpleSlider movies={featuredPeople} title={"Featured People"} type="people" />
-    </>
+    </Box>
   );
 };
 
