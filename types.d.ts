@@ -47,3 +47,49 @@ interface Episode {
   still_path: string;
   vote_average: number;
 }
+interface Credit {
+  adult: boolean;
+  backdrop_path: string;
+  character: string;
+  credit_id: string;
+  genre_ids: number[];
+  id: number;
+  media_type: "movie" | "tv";
+  original_language: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  vote_average: number;
+  vote_count: number;
+}
+interface TvCredit extends Credit {
+  episode_count: number;
+  first_air_date: string;
+  name: string;
+  original_name: string;
+  origin_country: string[];
+}
+interface MovieCredit extends Credit {
+  order: number;
+  title: string;
+  original_title: string;
+  video: boolean;
+  release_date: string;
+}
+interface People {
+  adult: false;
+  also_known_as: string[];
+  biography: string;
+  birthday: string;
+  combined_credits: { cast: (TvCredit | MovieCredit)[] };
+  deathday: null | string;
+  gender: 1 | 2;
+  homepage: null | string;
+  id: number;
+  imdb_id?: string;
+  known_for_department: string;
+  name: string;
+  place_of_birth: string;
+  popularity: number;
+  profile_path: string;
+}

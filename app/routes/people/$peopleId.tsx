@@ -4,36 +4,40 @@ import { Link, useLoaderData } from "@remix-run/react";
 import BioTruncate from "~/components/BioTruncate";
 import ReleaseDate from "../../components/common_components/ReleaseDate";
 import { useEffect, useState } from "react";
-import { MetaFunction } from "@remix-run/react/dist/routeModules";
+import { type MetaFunction } from "@remix-run/react/dist/routeModules";
 
 export async function loader({ params, request }: LoaderArgs) {
   const id = params.peopleId;
   const responsePeopleDetails = await fetch(
     `https://api.themoviedb.org/3/person/${id}?api_key=${process.env.API_KEY}&language=en-US&append_to_response=combined_credits`
   );
-  const peopleDetails = await responsePeopleDetails.json();
+  const peopleDetails: People = await responsePeopleDetails.json();
   return json({ people: peopleDetails });
 }
-function compare(a: any, b: any) {
+function compare(a: TvCredit | MovieCredit, b: TvCredit | MovieCredit) {
   return (
-    new Date(b.release_date ? b.release_date : b.first_air_date).getTime() -
-    new Date(a.release_date ? a.release_date : a.first_air_date).getTime()
+    new Date("release_date" in b ? b.release_date : b.first_air_date).getTime() -
+    new Date("release_date" in a ? a.release_date : a.first_air_date).getTime()
   );
 }
-function returnSortedNonNullArray(array: any) {
-  return array.combined_credits.cast.filter((e: any) => e.release_date !== "" && e.first_air_date !== "").sort(compare);
+function returnSortedNonNullArray(array: People) {
+  return array.combined_credits.cast
+    .filter((e) => ("release_date" in e ? e.release_date !== "" : e.first_air_date !== ""))
+    .sort(compare);
 }
-function returnNullArray(array: any) {
-  return array.combined_credits.cast.filter((e: any) => e.release_date === "" || e.first_air_date === "");
+function returnNullArray(array: People) {
+  return array.combined_credits.cast.filter((e) =>
+    "release_date" in e ? e.release_date === "" : e.first_air_date === ""
+  );
 }
 const PeopleDetails = () => {
   const { people } = useLoaderData<typeof loader>();
-  const [sortedNonNullArray, setSortedNonNullArray] = useState([]);
-  const [nullArray, setNullArray] = useState([]);
+  const [sortedNonNullArray, setSortedNonNullArray] = useState([] as (TvCredit | MovieCredit)[]);
+  const [nullArray, setNullArray] = useState([] as (TvCredit | MovieCredit)[]);
   useEffect(() => {
     setSortedNonNullArray(returnSortedNonNullArray(people));
     setNullArray(returnNullArray(people));
-  }, []);
+  }, [people]);
   console.log(people);
   console.log(sortedNonNullArray);
   console.log(nullArray);
@@ -91,7 +95,7 @@ const PeopleDetails = () => {
                     Unknown
                   </Text>
                 )}
-                {nullArray.map((e: any) => {
+                {nullArray.map((e) => {
                   return (
                     <div key={e.credit_id}>
                       <Stack direction="row">
@@ -108,7 +112,7 @@ const PeopleDetails = () => {
                         <Stack direction="row" wrap="wrap">
                           <Link to={`/${e.media_type}/${e.id}`} className="remix-link">
                             <Text fontWeight="semibold" fontSize="sm">
-                              {e.title ? e.title : e.name}
+                              {"title" in e ? e.title : e.name}
                             </Text>
                           </Link>
 
@@ -125,7 +129,7 @@ const PeopleDetails = () => {
                     </div>
                   );
                 })}
-                {sortedNonNullArray.map((e: any, index, array: any[]) => {
+                {sortedNonNullArray.map((e, index, array: any[]) => {
                   return (
                     <div key={e.credit_id}>
                       {index > 0 &&
@@ -134,23 +138,23 @@ const PeopleDetails = () => {
                             ? array[index - 1].release_date
                             : array[index - 1].first_air_date
                         ).getFullYear() !==
-                          new Date(e.release_date ? e.release_date : e.first_air_date).getFullYear() && (
+                          new Date("release_date" in e ? e.release_date : e.first_air_date).getFullYear() && (
                           <>
                             <Text borderBottom="1px" borderBottomColor="black" fontWeight="bold">
-                              {new Date(e.release_date ? e.release_date : e.first_air_date).getFullYear()}
+                              {new Date("release_date" in e ? e.release_date : e.first_air_date).getFullYear()}
                             </Text>
                           </>
                         )}
                       {index == 0 && (
                         <>
                           <Text fontWeight="bold" borderBottom="1px" borderBottomColor="black">
-                            {new Date(e.release_date ? e.release_date : e.first_air_date).getFullYear()}
+                            {new Date("release_date" in e ? e.release_date : e.first_air_date).getFullYear()}
                           </Text>
                         </>
                       )}
                       <Stack direction="row">
                         <Text fontSize="sm">
-                          {new Date(e.release_date ? e.release_date : e.first_air_date).toLocaleString("en-US", {
+                          {new Date("release_date" in e ? e.release_date : e.first_air_date).toLocaleString("en-US", {
                             month: "2-digit",
                             day: "2-digit",
                             year: "2-digit",
@@ -162,7 +166,7 @@ const PeopleDetails = () => {
                         <Stack direction="row" wrap="wrap">
                           <Link to={`/${e.media_type}/${e.id}`} className="remix-link">
                             <Text fontWeight="semibold" fontSize="sm">
-                              {e.title ? e.title : e.name}
+                              {"title" in e ? e.title : e.name}
                             </Text>
                           </Link>
 
@@ -189,7 +193,7 @@ const PeopleDetails = () => {
 };
 export const meta: MetaFunction = ({ data }) => {
   return {
-    title: `${data.people.name}`,
+    title: data.people.name,
   };
 };
 export default PeopleDetails;
