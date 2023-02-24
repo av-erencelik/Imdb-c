@@ -11,6 +11,7 @@ import VideoSlider from "~/components/VideoSlider";
 import LandingMovieDesktop from "~/components/movie/LandingMovieDesktop";
 import LandingMovieMobile from "~/components/movie/LandingMovieMobile";
 import DetailsStickyFooter from "~/components/common_components/DetailsStickyFooter";
+import { MetaFunction } from "@remix-run/react/dist/routeModules";
 var Vibrant = require("node-vibrant");
 var tinycolor = require("tinycolor2");
 
@@ -21,12 +22,17 @@ export async function loader({ params, request }: LoaderArgs) {
     `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}&session_id=${sessionId}&US&append_to_response=credits,videos,account_states,watch/providers`
   );
   const movieDetails = await responseMovieDetails.json();
-  await Vibrant.from(`https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}`)
-    .getPalette()
-    .then(
-      (palette: any) =>
-        (movieDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
-    );
+  if (movieDetails.backdrop_path) {
+    await Vibrant.from(`https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}`)
+      .getPalette()
+      .then(
+        (palette: any) =>
+          (movieDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
+      );
+  } else {
+    movieDetails.colorRgb = "rgb(236, 201, 75, 0.8)";
+  }
+
   const color = tinycolor(movieDetails.colorRgb);
   const cast = returnNecessaryPeople(movieDetails.credits.cast);
   movieDetails.isLight = color.isLight();
@@ -64,5 +70,9 @@ const MovieDetails = () => {
     </Box>
   );
 };
-
+export const meta: MetaFunction = ({ data }) => {
+  return {
+    title: `${data.movie.title}`,
+  };
+};
 export default MovieDetails;

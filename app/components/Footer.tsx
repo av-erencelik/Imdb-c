@@ -3,7 +3,7 @@ import { FaGithub, FaLinkedin, FaInstagram, FaTwitter } from "react-icons/fa";
 import tmbd from "../../public/tmdbLogo.png";
 const Footer = () => {
   return (
-    <Box as="footer" bg="blackAlpha.800" p="3">
+    <Box as="footer" bg="blackAlpha.800" p="3" mt="auto">
       <Container maxW="container.xl" px={{ base: 0, md: 4 }}>
         <Flex justifyContent="space-between" flexDirection={{ base: "column", md: "row" }} alignItems="center" gap="3">
           <Flex alignItems="center">

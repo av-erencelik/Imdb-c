@@ -23,12 +23,17 @@ export async function loader({ params, request }: LoaderArgs) {
     `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}&session_id=${sessionId}&US&append_to_response=credits,videos,account_states,watch/providers`
   );
   const tvShowDetails = await responseTvShowDetails.json();
-  await Vibrant.from(`https://image.tmdb.org/t/p/original${tvShowDetails.backdrop_path}`)
-    .getPalette()
-    .then(
-      (palette: any) =>
-        (tvShowDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
-    );
+  if (tvShowDetails.backdrop_path) {
+    await Vibrant.from(`https://image.tmdb.org/t/p/original${tvShowDetails.backdrop_path}`)
+      .getPalette()
+      .then(
+        (palette: any) =>
+          (tvShowDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
+      );
+  } else {
+    tvShowDetails.colorRgb = "rgb(236, 201, 75, 0.8)";
+  }
+
   const color = tinycolor(tvShowDetails.colorRgb);
   const cast = returnNecessaryPeople(tvShowDetails.credits.cast);
   tvShowDetails.isLight = color.isLight();
