@@ -1,7 +1,6 @@
 import { Box, Container } from "@chakra-ui/react";
 import { type LoaderArgs, json, type Request } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-
 import { getUserFromSession, postAddWatchList, postFavorite, rate } from "~/auth.server";
 
 import { returnNecessaryPeople } from "~/data.server";

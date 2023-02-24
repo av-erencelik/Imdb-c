@@ -3,6 +3,8 @@ import { type LoaderArgs, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import ReleaseDate from "~/components/common_components/ReleaseDate";
 import Title from "~/components/common_components/Title";
+import fallbackImg from "../../../../../public/fallback.jpg";
+import fallbackPng from "../../../../../public/fallback.png";
 export async function loader({ params, request }: LoaderArgs) {
   const seasonNumber = params.seasonId;
   const url = new URL(request.url);
@@ -16,12 +18,16 @@ export async function loader({ params, request }: LoaderArgs) {
 }
 const Season = () => {
   const { season } = useLoaderData<typeof loader>();
-  console.log(season);
   return (
     <Box as="main">
       <Box borderBottom="1px" borderColor="gray.200" bg="yellow.400">
         <Container maxW={"container.xl"} overflow="hidden" gap="5" alignItems="center" display="flex" py="5">
-          <Image src={`https://image.tmdb.org/t/p/original${season.poster_path}`} h="250px" borderRadius="xl"></Image>
+          <Image
+            src={`https://image.tmdb.org/t/p/original${season.poster_path}`}
+            h="250px"
+            borderRadius="xl"
+            fallbackSrc={fallbackImg}
+          ></Image>
           <Box>
             <Title title={season.name} date={season.air_date} />
             {season.overview ? (
@@ -48,7 +54,7 @@ const Season = () => {
                   src={`https://image.tmdb.org/t/p/original${episode.still_path}`}
                   maxW={{ base: "100%", sm: "200px" }}
                   objectFit="cover"
-                  loading="lazy"
+                  fallbackSrc={fallbackPng}
                 />
                 <Stack>
                   <CardBody>

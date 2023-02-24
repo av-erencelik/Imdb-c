@@ -9,7 +9,7 @@ import ReleaseDate from "../common_components/ReleaseDate";
 import Runtime from "../common_components/Runtime";
 import Title from "../common_components/Title";
 import StarRating from "../StarRating";
-
+import fallbackImg from "../../../public/fallback.jpg";
 const LandingTvDesktop = ({ movie }: { movie: any }) => {
   return (
     <Box
@@ -25,6 +25,7 @@ const LandingTvDesktop = ({ movie }: { movie: any }) => {
             objectFit="contain"
             h={{ base: "210px", md: "410px" }}
             borderRadius={"xl"}
+            fallbackSrc={fallbackImg}
           ></Image>
           <Box
             color={movie.isLight ? "black" : "white"}
@@ -114,7 +115,7 @@ const LandingTvDesktop = ({ movie }: { movie: any }) => {
               <Text fontSize="2xl" fontWeight="bold">
                 Overview
               </Text>
-              <Text>{movie.overview}</Text>
+              <Text noOfLines={5}>{movie.overview}</Text>
             </Box>
             <Flex gap="3" w="50px">
               {movie["watch/providers"].results.US &&

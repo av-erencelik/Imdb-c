@@ -2,7 +2,6 @@ import { StarIcon } from "@chakra-ui/icons";
 import { Box, Flex, Image, Text, Tooltip } from "@chakra-ui/react";
 
 import { CgFormatSlash } from "react-icons/cg";
-
 import Genre from "../common_components/Genre";
 import ReleaseDate from "../common_components/ReleaseDate";
 import Runtime from "../common_components/Runtime";

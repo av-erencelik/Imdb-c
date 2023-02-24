@@ -1,6 +1,6 @@
 import { Box, Container, Flex, Image, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import { Link } from "@remix-run/react";
-
+import fallbackImg from "../../../public/fallback.jpg";
 const Seasons = ({ seasons }: { seasons: Season[] }) => {
   return (
     <Container maxW="container.xl">
@@ -31,7 +31,11 @@ const Seasons = ({ seasons }: { seasons: Season[] }) => {
                     borderColor="gray.200"
                     pr="4"
                   >
-                    <Image src={`https://image.tmdb.org/t/p/original${season.poster_path}`} h="200px"></Image>
+                    <Image
+                      src={`https://image.tmdb.org/t/p/original${season.poster_path}`}
+                      h="200px"
+                      fallbackSrc={fallbackImg}
+                    ></Image>
                     <Box>
                       <Link to={`season/${season.season_number}`}>
                         <Text

@@ -9,7 +9,7 @@ import ReleaseDate from "../common_components/ReleaseDate";
 import Runtime from "../common_components/Runtime";
 import Title from "../common_components/Title";
 import StarRating from "../StarRating";
-
+import fallbackImg from "../../../public/fallback.jpg";
 const LandingMovieDesktop = ({ movie }: { movie: any }) => {
   return (
     <Box
@@ -25,6 +25,7 @@ const LandingMovieDesktop = ({ movie }: { movie: any }) => {
             objectFit="contain"
             h={{ base: "210px", md: "410px" }}
             borderRadius={"xl"}
+            fallbackSrc={fallbackImg}
           ></Image>
           <Box
             color={movie.isLight ? "black" : "white"}
