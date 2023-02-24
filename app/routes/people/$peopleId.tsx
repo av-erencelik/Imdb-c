@@ -38,9 +38,6 @@ const PeopleDetails = () => {
     setSortedNonNullArray(returnSortedNonNullArray(people));
     setNullArray(returnNullArray(people));
   }, [people]);
-  console.log(people);
-  console.log(sortedNonNullArray);
-  console.log(nullArray);
   return (
     <Box as="main">
       <Box bg="yellow.400">
