@@ -5,7 +5,7 @@ import BioTruncate from "~/components/BioTruncate";
 import ReleaseDate from "../../components/common_components/ReleaseDate";
 import { useEffect, useState } from "react";
 import { type MetaFunction } from "@remix-run/react/dist/routeModules";
-
+import defaultPP from "../../../public/default.jpg";
 export async function loader({ params, request }: LoaderArgs) {
   const id = params.peopleId;
   const responsePeopleDetails = await fetch(
@@ -50,7 +50,12 @@ const PeopleDetails = () => {
           py="5"
           flexDirection={{ base: "column", md: "row" }}
         >
-          <Image src={`https://image.tmdb.org/t/p/original${people.profile_path}`} h="250px" borderRadius="xl"></Image>
+          <Image
+            src={`https://image.tmdb.org/t/p/original${people.profile_path}`}
+            h="250px"
+            borderRadius="xl"
+            fallbackSrc={defaultPP}
+          ></Image>
           <Box textAlign={{ base: "center", md: "initial" }}>
             <Text as="h2" fontSize="2xl" textAlign={{ base: "center", md: "initial" }} fontWeight="semibold">
               {people.name}{" "}

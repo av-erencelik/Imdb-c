@@ -93,3 +93,42 @@ interface People {
   popularity: number;
   profile_path: string;
 }
+interface SearchResult {
+  adult: boolean;
+  id: number;
+  media_type: "movie" | "person" | "tv";
+  popularity: number;
+}
+interface ResultPerson extends SearchResult {
+  gender: 0 | 1 | 2;
+  known_for: (TvCredit | MovieCredit)[];
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  profile_path: string | null;
+}
+interface ResultMovie extends SearchResult {
+  backdrop_path: string;
+  genre_ids: number[];
+  original_language: string;
+  original_title: string;
+  overview: string;
+  poster_path: string;
+  release_date: string;
+  title: string;
+  vote_average: number;
+  vote_count: number;
+}
+interface ResultTvShow extends SearchResult {
+  backdrop_path: string;
+  first_air_date: string;
+  genre_ids: number[];
+  name: string;
+  original_language: string;
+  origin_country: string[];
+  original_name: string;
+  overview: string;
+  poster_path: string;
+  vote_average: number;
+  vote_count: number;
+}

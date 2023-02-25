@@ -56,21 +56,17 @@ export default function SimpleSlider(props: {
       </Text>
       <Slider {...settings} ref={slider}>
         {movies.map((movie: NecessaryData | NecessaryDataPeople, index: number) => (
-          <Card maxW="175px" h="285px" overflow="hidden" cursor="pointer" key={index} className="hover">
+          <Card maxW="175px" h="285px" overflow="hidden" cursor="pointer" key={index}>
             <Link to={`/${type}/${movie.id}`}>
-              <CardBody p="0">
+              <CardBody p="0" overflow="hidden">
                 <Image
                   src={movie.poster ? `https://image.tmdb.org/t/p/original${movie.poster}` : defaultPP}
                   w="100%"
                   objectFit={"cover"}
                   maxH="200px"
-                  fallback={
-                    <Skeleton>
-                      <Box h="200px" w="100%"></Box>
-                    </Skeleton>
-                  }
                   fallbackSrc="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
                   loading="lazy"
+                  className="hover"
                 />
               </CardBody>
               <CardFooter display="block" p="2">

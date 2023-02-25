@@ -163,7 +163,7 @@ const Navbar = ({ user }: { user: any }) => {
           </Flex>
 
           <Box display={{ base: "none", md: "block" }}>
-            <Form method="post" action="/search">
+            <Form method="get" action="/search">
               <FormControl display="flex" borderColor={"yellow"} _hover={{ borderColor: "yellow" }}>
                 <InputGroup>
                   <Input
@@ -182,7 +182,7 @@ const Navbar = ({ user }: { user: any }) => {
                   </InputRightElement>
                 </InputGroup>
 
-                <Button type="submit" display="none" />
+                <Button type="submit" visibility="hidden" />
               </FormControl>
             </Form>
           </Box>

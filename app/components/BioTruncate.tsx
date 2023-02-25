@@ -11,7 +11,7 @@ const BioTruncate = ({ biography }: { biography: string }) => {
           Biography
         </Text>
         {biography.length !== 0 ? (
-          <Box px="3" pt="3" display="flex" justifyContent="center" flexDirection="column">
+          <Box px="3" pb={truncate ? "0" : "3"} pt="3" display="flex" justifyContent="center" flexDirection="column">
             <Text noOfLines={truncate}>{biography}</Text>
             {truncate !== 0 && (
               <IconButton
