@@ -1,18 +1,12 @@
-import { ChevronLeftIcon, ChevronRightIcon, StarIcon } from "@chakra-ui/icons";
-import { Box, Card, CardBody, CardFooter, Container, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { StarIcon } from "@chakra-ui/icons";
+import { Box, Card, CardBody, Container, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import { redirect, type LoaderArgs } from "@remix-run/node";
 import { Link, useLoaderData, useNavigate, useSearchParams } from "@remix-run/react";
 import fallbackImg from "../../public/fallback.jpg";
 import defaultPP from "../../public/default.jpg";
-import {
-  Pagination,
-  usePagination,
-  PaginationNext,
-  PaginationPage,
-  PaginationPrevious,
-  PaginationContainer,
-  PaginationPageGroup,
-} from "@ajna/pagination";
+import { usePagination } from "@ajna/pagination";
+import CommonPagination from "~/components/common_components/CommonPagination";
+import { CardDiscover } from "~/components/common_components/CardDiscover";
 export async function loader({ params, request }: LoaderArgs) {
   const url = new URL(request.url);
   const searchParam = url.searchParams.get("search");
@@ -51,41 +45,12 @@ const Search = () => {
         Results For "{searchParams.get("search")}"
       </Text>
       {data.total_pages != 1 && (
-        <Pagination pagesCount={pagesCount} currentPage={currentPage} onPageChange={handlePageChange}>
-          <PaginationContainer w="full" justifyContent={"center"} pt="3" mt="auto" gap={1}>
-            <PaginationPrevious colorScheme="yellow" p="0">
-              <ChevronLeftIcon />
-            </PaginationPrevious>
-            <PaginationPageGroup justifyContent="center">
-              {pages.map((page: number) => (
-                <PaginationPage
-                  key={`pagination_page_${page}`}
-                  page={page}
-                  w={5}
-                  colorScheme="gray"
-                  bg="transparent"
-                  fontSize="sm"
-                  color="blackAlpha.800"
-                  _hover={{
-                    bg: "yellow.400",
-                    color: "blackAlpha.800",
-                  }}
-                  _current={{
-                    w: 10,
-                    bg: "yellow.400",
-                    fontSize: "sm",
-                    color: "blackAlpha.800",
-                  }}
-                />
-              ))}
-            </PaginationPageGroup>
-            <Link to={`?${searchParams.toString()}`}>
-              <PaginationNext colorScheme="yellow" p="0">
-                <ChevronRightIcon />
-              </PaginationNext>
-            </Link>
-          </PaginationContainer>
-        </Pagination>
+        <CommonPagination
+          pagesCount={pagesCount}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          pages={pages}
+        />
       )}
 
       <Flex
@@ -98,67 +63,7 @@ const Search = () => {
         px="5"
       >
         {data.results.map((result: ResultMovie | ResultPerson | ResultTvShow) => {
-          return (
-            <Card
-              key={result.id}
-              overflow="hidden"
-              cursor="pointer"
-              w={{ base: "100%", md: "220px" }}
-              direction={{ base: "row", md: "column" }}
-              variant="outline"
-            >
-              <Link to={`/${result.media_type === "person" ? "people" : result.media_type}/${result.id}`}>
-                <div style={{ overflow: "hidden" }}>
-                  <Image
-                    objectFit="cover"
-                    src={`https://image.tmdb.org/t/p/original${
-                      "profile_path" in result ? result.profile_path : result.poster_path
-                    }`}
-                    w={{ base: "100px", md: "220px" }}
-                    h={{ base: "100px", md: "275px" }}
-                    maxW="initial"
-                    fallbackSrc={"profile_path" in result ? defaultPP : fallbackImg}
-                    className="hover"
-                  ></Image>
-                </div>
-              </Link>
-              <Stack my={{ base: "auto", md: "0" }} wrap="wrap">
-                <CardBody p="2" display="flex" flexDirection={{ base: "column-reverse", md: "column" }}>
-                  <Box display="flex" justifyContent="space-between" alignItems="center" gap="20px">
-                    {"vote_average" in result ? (
-                      <>
-                        <Flex gap="5px" alignItems="center">
-                          <StarIcon color="yellow.400" boxSize={3} />
-                          <Text fontWeight="semibold" fontSize="md" color="yellow.400">
-                            {Number(result.vote_average).toFixed(1)}
-                          </Text>
-                        </Flex>
-                        <Text fontSize="sm" color="gray.400">
-                          {new Date(
-                            "release_date" in result ? result.release_date : result.first_air_date
-                          ).toLocaleString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </Text>
-                      </>
-                    ) : null}
-                  </Box>
-
-                  {"known_for_department" in result ? (
-                    <Text fontSize="sm" color="gray.400">
-                      {result.known_for_department}
-                    </Text>
-                  ) : null}
-
-                  <Text noOfLines={2} fontWeight="semibold" fontSize="medium">
-                    {"title" in result ? result.title : result.name}
-                  </Text>
-                </CardBody>
-              </Stack>
-            </Card>
-          );
+          return <CardDiscover result={result} key={result.id} />;
         })}
       </Flex>
       {data.results.length == 0 && (
@@ -167,41 +72,12 @@ const Search = () => {
         </Text>
       )}
       {data.results.length === 20 && (
-        <Pagination pagesCount={pagesCount} currentPage={currentPage} onPageChange={handlePageChange}>
-          <PaginationContainer w="full" justifyContent={"center"} pt="3" mt="auto" gap={1}>
-            <PaginationPrevious colorScheme="yellow" p="0">
-              <ChevronLeftIcon />
-            </PaginationPrevious>
-            <PaginationPageGroup justifyContent="center">
-              {pages.map((page: number) => (
-                <PaginationPage
-                  key={`pagination_page_${page}`}
-                  page={page}
-                  w={5}
-                  colorScheme="gray"
-                  bg="transparent"
-                  fontSize="sm"
-                  color="blackAlpha.800"
-                  _hover={{
-                    bg: "yellow.400",
-                    color: "blackAlpha.800",
-                  }}
-                  _current={{
-                    w: 10,
-                    bg: "yellow.400",
-                    fontSize: "sm",
-                    color: "blackAlpha.800",
-                  }}
-                />
-              ))}
-            </PaginationPageGroup>
-            <Link to={`?${searchParams.toString()}`}>
-              <PaginationNext colorScheme="yellow" p="0">
-                <ChevronRightIcon />
-              </PaginationNext>
-            </Link>
-          </PaginationContainer>
-        </Pagination>
+        <CommonPagination
+          pagesCount={pagesCount}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          pages={pages}
+        />
       )}
     </Container>
   );
