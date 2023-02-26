@@ -285,7 +285,7 @@ const Navbar = ({ user }: { user: any }) => {
       </Container>
       {isSearching && (
         <Box display={{ base: "block", md: "none" }} mt="1">
-          <Form method="post" action="/search">
+          <Form method="get" action="/search">
             <FormControl display="flex" borderColor={"yellow"} _hover={{ borderColor: "yellow" }}>
               <InputGroup>
                 <Input

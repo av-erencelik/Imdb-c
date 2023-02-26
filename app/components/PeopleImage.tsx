@@ -16,6 +16,7 @@ const PeopleImage = () => {
       justifyContent="center"
       alignItems={{ base: "center", lg: "flex-start" }}
       px="50px"
+      borderRadius="md"
     >
       <Text
         zIndex="20"

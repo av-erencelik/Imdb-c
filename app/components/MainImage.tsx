@@ -17,6 +17,7 @@ const MainImage = () => {
         justifyContent="center"
         alignItems={{ base: "center", lg: "flex-start" }}
         px="50px"
+        borderBottomRadius="md"
       >
         <Text
           zIndex="20"

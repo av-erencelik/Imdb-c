@@ -32,7 +32,6 @@ const Search = () => {
   const { data } = useLoaderData();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  console.log(data);
   const { currentPage, setCurrentPage, pagesCount, pages } = usePagination({
     pagesCount: Number(data.total_pages),
     limits: {
@@ -51,43 +50,46 @@ const Search = () => {
       <Text as="h2" fontSize="2xl" fontWeight="bold" color="yellow.400" bg="blackAlpha.800" pl="4" borderRadius="md">
         Results For "{searchParams.get("search")}"
       </Text>
-      <Pagination pagesCount={pagesCount} currentPage={currentPage} onPageChange={handlePageChange}>
-        <PaginationContainer w="full" justifyContent={"center"} pt="3" mt="auto" gap={1}>
-          <PaginationPrevious colorScheme="yellow" p="0">
-            <ChevronLeftIcon />
-          </PaginationPrevious>
-          <PaginationPageGroup justifyContent="center">
-            {pages.map((page: number) => (
-              <PaginationPage
-                key={`pagination_page_${page}`}
-                page={page}
-                w={5}
-                colorScheme="gray"
-                bg="transparent"
-                fontSize="sm"
-                color="blackAlpha.800"
-                _hover={{
-                  bg: "yellow.400",
-                  color: "blackAlpha.800",
-                }}
-                _current={{
-                  w: 10,
-                  bg: "yellow.400",
-                  fontSize: "sm",
-                  color: "blackAlpha.800",
-                }}
-              />
-            ))}
-          </PaginationPageGroup>
-          <Link to={`?${searchParams.toString()}`}>
-            <PaginationNext colorScheme="yellow" p="0">
-              <ChevronRightIcon />
-            </PaginationNext>
-          </Link>
-        </PaginationContainer>
-      </Pagination>
+      {data.total_pages != 1 && (
+        <Pagination pagesCount={pagesCount} currentPage={currentPage} onPageChange={handlePageChange}>
+          <PaginationContainer w="full" justifyContent={"center"} pt="3" mt="auto" gap={1}>
+            <PaginationPrevious colorScheme="yellow" p="0">
+              <ChevronLeftIcon />
+            </PaginationPrevious>
+            <PaginationPageGroup justifyContent="center">
+              {pages.map((page: number) => (
+                <PaginationPage
+                  key={`pagination_page_${page}`}
+                  page={page}
+                  w={5}
+                  colorScheme="gray"
+                  bg="transparent"
+                  fontSize="sm"
+                  color="blackAlpha.800"
+                  _hover={{
+                    bg: "yellow.400",
+                    color: "blackAlpha.800",
+                  }}
+                  _current={{
+                    w: 10,
+                    bg: "yellow.400",
+                    fontSize: "sm",
+                    color: "blackAlpha.800",
+                  }}
+                />
+              ))}
+            </PaginationPageGroup>
+            <Link to={`?${searchParams.toString()}`}>
+              <PaginationNext colorScheme="yellow" p="0">
+                <ChevronRightIcon />
+              </PaginationNext>
+            </Link>
+          </PaginationContainer>
+        </Pagination>
+      )}
+
       <Flex
-        gap="27px"
+        gap={{ base: "10px", md: "27px" }}
         pt="3"
         wrap="wrap"
         justifyContent="flex-start"
@@ -103,6 +105,7 @@ const Search = () => {
               cursor="pointer"
               w={{ base: "100%", md: "220px" }}
               direction={{ base: "row", md: "column" }}
+              variant="outline"
             >
               <Link to={`/${result.media_type === "person" ? "people" : result.media_type}/${result.id}`}>
                 <div style={{ overflow: "hidden" }}>
@@ -113,13 +116,14 @@ const Search = () => {
                     }`}
                     w={{ base: "100px", md: "220px" }}
                     h={{ base: "100px", md: "275px" }}
+                    maxW="initial"
                     fallbackSrc={"profile_path" in result ? defaultPP : fallbackImg}
                     className="hover"
                   ></Image>
                 </div>
               </Link>
-              <Stack my="auto">
-                <CardBody p="2" display="block">
+              <Stack my={{ base: "auto", md: "0" }} wrap="wrap">
+                <CardBody p="2" display="flex" flexDirection={{ base: "column-reverse", md: "column" }}>
                   <Box display="flex" justifyContent="space-between" alignItems="center" gap="20px">
                     {"vote_average" in result ? (
                       <>

@@ -50,60 +50,62 @@ export default function SimpleSlider(props: {
     ],
   };
   return (
-    <Container maxW="container.xl" mt="2" px={"1"}>
+    <Container maxW="container.xl" mt="2" px={{ base: "1", md: "0" }}>
       <Text as="h2" fontSize="2xl" fontWeight="bold" color="yellow.400" bg="blackAlpha.800" pl="4" borderRadius="md">
         {title}
       </Text>
-      <Slider {...settings} ref={slider}>
-        {movies.map((movie: NecessaryData | NecessaryDataPeople, index: number) => (
-          <Card maxW="175px" h="285px" overflow="hidden" cursor="pointer" key={index}>
-            <Link to={`/${type}/${movie.id}`}>
-              <CardBody p="0" overflow="hidden">
-                <Image
-                  src={movie.poster ? `https://image.tmdb.org/t/p/original${movie.poster}` : defaultPP}
-                  w="100%"
-                  objectFit={"cover"}
-                  maxH="200px"
-                  fallbackSrc="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
-                  loading="lazy"
-                  className="hover"
-                />
-              </CardBody>
-              <CardFooter display="block" p="2">
-                <Box display="flex" justifyContent="space-between" alignItems="center" gap="20px">
-                  {"rating" in movie ? (
-                    <Flex gap="5px" alignItems="center">
-                      <StarIcon color="yellow.400" boxSize={3} />
-                      <Text fontWeight="medium" fontSize="sm" color="yellow.400">
-                        {movie.rating}
-                      </Text>
-                    </Flex>
-                  ) : null}
+      <Box px={{ base: "1", md: "2" }}>
+        <Slider {...settings} ref={slider}>
+          {movies.map((movie: NecessaryData | NecessaryDataPeople, index: number) => (
+            <Card maxW="200px" h="285px" overflow="hidden" cursor="pointer" key={index} p="0">
+              <Link to={`/${type}/${movie.id}`}>
+                <CardBody p="0" overflow="hidden">
+                  <Image
+                    src={movie.poster ? `https://image.tmdb.org/t/p/original${movie.poster}` : defaultPP}
+                    w="100%"
+                    objectFit={"cover"}
+                    maxH="200px"
+                    fallbackSrc="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
+                    loading="lazy"
+                    className="hover"
+                  />
+                </CardBody>
+                <CardFooter display="block" p="2">
+                  <Box display="flex" justifyContent="space-between" alignItems="center" gap="20px">
+                    {"rating" in movie ? (
+                      <Flex gap="5px" alignItems="center">
+                        <StarIcon color="yellow.400" boxSize={3} />
+                        <Text fontWeight="medium" fontSize="sm" color="yellow.400">
+                          {movie.rating}
+                        </Text>
+                      </Flex>
+                    ) : null}
 
-                  {"releaseDate" in movie ? (
-                    <Text fontSize="sm">
-                      {new Date(movie.releaseDate).toLocaleString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </Text>
-                  ) : movie.character ? (
-                    <Text fontSize="sm">{movie.character}</Text>
-                  ) : (
-                    <Text fontSize="sm">
-                      {movie.role === "Acting" ? (movie.gender === "female" ? "Actress" : "Actor") : "Director"}
-                    </Text>
-                  )}
-                </Box>
-                <Text noOfLines={2} fontWeight="semibold" fontSize="medium">
-                  {"title" in movie ? movie.title : movie.name}
-                </Text>
-              </CardFooter>
-            </Link>
-          </Card>
-        ))}
-      </Slider>
+                    {"releaseDate" in movie ? (
+                      <Text fontSize="sm">
+                        {new Date(movie.releaseDate).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </Text>
+                    ) : movie.character ? (
+                      <Text fontSize="sm">{movie.character}</Text>
+                    ) : (
+                      <Text fontSize="sm">
+                        {movie.role === "Acting" ? (movie.gender === "female" ? "Actress" : "Actor") : "Director"}
+                      </Text>
+                    )}
+                  </Box>
+                  <Text noOfLines={2} fontWeight="semibold" fontSize="medium">
+                    {"title" in movie ? movie.title : movie.name}
+                  </Text>
+                </CardFooter>
+              </Link>
+            </Card>
+          ))}
+        </Slider>
+      </Box>
     </Container>
   );
 }
