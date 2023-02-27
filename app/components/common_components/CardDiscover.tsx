@@ -13,7 +13,19 @@ export const CardDiscover = ({ result }: { result: ResultMovie | ResultPerson | 
       direction={{ base: "row", md: "column" }}
       variant="outline"
     >
-      <Link to={`/${result.media_type === "person" ? "people" : result.media_type}/${result.id}`}>
+      <Link
+        to={`/${
+          result.media_type
+            ? result.media_type === "person"
+              ? "people"
+              : result.media_type
+            : "first_air_date" in result
+            ? "tv"
+            : "release_date" in result
+            ? "movie"
+            : "person"
+        }/${result.id}`}
+      >
         <div style={{ overflow: "hidden" }}>
           <Image
             objectFit="cover"

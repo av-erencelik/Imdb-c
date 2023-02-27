@@ -43,6 +43,7 @@ const CommonPagination = ({
                 bg: "yellow.400",
                 fontSize: "sm",
                 color: "blackAlpha.800",
+                _hover: { color: "blackAlpha.800" },
               }}
             />
           ))}

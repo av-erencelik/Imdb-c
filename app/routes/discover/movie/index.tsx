@@ -20,6 +20,7 @@ import {
   RangeSliderMark,
   RangeSliderThumb,
   RangeSliderTrack,
+  Select,
   Text,
 } from "@chakra-ui/react";
 import { Form, Link, useLoaderData, useNavigate, useNavigation, useSearchParams } from "@remix-run/react";
@@ -46,7 +47,11 @@ export async function loader({ request }: LoaderArgs) {
     url.searchParams.get("primary_release_date.lte") || ""
   }&primary_release_date.gte=${url.searchParams.get("primary_release_date.gte") || ""}&with_genres=${
     url.searchParams.getAll("genres").toString() || ""
-  }&vote_average.gte=${url.searchParams.get("min") || "0"}&vote_average.lte=${url.searchParams.get("max") || "10"}`);
+  }&vote_average.gte=${url.searchParams.get("min") || "0"}&vote_average.lte=${url.searchParams.get("max") || "10"}${
+    url.searchParams.get("sort_by") === "vote_average.desc" || url.searchParams.get("sort_by") === "vote_average.desc"
+      ? "&vote_count.gte=200"
+      : ""
+  }`);
   const genresResponse = await fetch(`
   https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.API_KEY}`);
   const genres = await genresResponse.json();
@@ -80,7 +85,7 @@ const DiscoverMovie = () => {
       <Text as="h2" fontSize="2xl" fontWeight="bold" color="yellow.400" bg="blackAlpha.800" pl="4" borderRadius="md">
         Discover Movies
       </Text>
-      {data.total_pages != 1 && (
+      {data.total_pages != 1 && data.total_pages != 0 && (
         <CommonPagination
           pagesCount={pagesCount}
           currentPage={currentPage}
@@ -88,20 +93,75 @@ const DiscoverMovie = () => {
           pages={pages}
         />
       )}
-      <Flex>
-        <Box py="3">
-          <Accordion w="232px" allowToggle>
-            <AccordionItem w="full" border="1px" borderColor="gray.300" borderRadius="md">
-              <h2>
-                <AccordionButton>
-                  <Box as="span" textAlign="left">
-                    Filter
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <Form method="get">
+      <Flex flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "center", md: "normal" }}>
+        <Box py="3" w={{ base: "full", md: "initial" }}>
+          <Accordion w={{ base: "full", md: "232px" }} allowToggle>
+            <Form method="get">
+              <AccordionItem w="full" border="1px" borderColor="gray.300" borderRadius="md">
+                <h2>
+                  <AccordionButton>
+                    <Box as="span" textAlign="left">
+                      Sort
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  <FormControl>
+                    <Select
+                      placeholder="Sort"
+                      size="sm"
+                      name="sort_by"
+                      focusBorderColor="yellow.400"
+                      borderColor={"yellow.400"}
+                      borderRadius="5px"
+                      defaultValue={searchParams.get("sort_by") || ""}
+                    >
+                      <option value="popularity.desc">Popularity Descending</option>
+                      <option value="popularity.asc">Popularity Ascending</option>
+                      <option value="primary_release_date.desc">Release Date Descending</option>
+                      <option value="primary_release_date.asc">Release Date Ascending</option>
+                      <option value="vote_average.desc">Rating Descending</option>
+                      <option value="vote_average.asc">Rating Ascending</option>
+                    </Select>
+                  </FormControl>
+                  <Flex>
+                    <Link to="/discover/movie" style={{ width: "100%" }}>
+                      <Button
+                        type="submit"
+                        w="full"
+                        colorScheme="blackAlpha"
+                        mt="20px"
+                        borderEndRadius="0"
+                        isDisabled={navigation.state !== "idle"}
+                      >
+                        Reset
+                      </Button>
+                    </Link>
+
+                    <Button
+                      type="submit"
+                      w="full"
+                      colorScheme="yellow"
+                      mt="20px"
+                      borderStartRadius="0"
+                      isDisabled={navigation.state !== "idle"}
+                    >
+                      Sort
+                    </Button>
+                  </Flex>
+                </AccordionPanel>
+              </AccordionItem>
+              <AccordionItem w="full" border="1px" borderColor="gray.300" borderRadius="md">
+                <h2>
+                  <AccordionButton>
+                    <Box as="span" textAlign="left">
+                      Filter
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
                   <Box
                     display="flex"
                     flexDirection="column"
@@ -176,7 +236,7 @@ const DiscoverMovie = () => {
                           sx={{ color: "gray.400", "input:checked ~ span": { color: "blackAlpha.800" } }}
                           size="sm"
                           flex="47%"
-                          isChecked={searchParams.getAll("genres").includes(`${genre.id}`)}
+                          defaultChecked={searchParams.getAll("genres").includes(`${genre.id}`)}
                         >
                           {genre.name}
                         </Checkbox>
@@ -231,6 +291,7 @@ const DiscoverMovie = () => {
                       <RangeSliderThumb index={1} bg="blackAlpha.800" />
                     </RangeSlider>
                   </Box>
+
                   <Flex>
                     <Link to="/discover/movie" style={{ width: "100%" }}>
                       <Button
@@ -256,25 +317,31 @@ const DiscoverMovie = () => {
                       Filter
                     </Button>
                   </Flex>
-                </Form>
-              </AccordionPanel>
-            </AccordionItem>
+                </AccordionPanel>
+              </AccordionItem>
+            </Form>
           </Accordion>
         </Box>
 
-        <Flex
-          gap={{ base: "10px", md: "27px" }}
-          pt="3"
-          wrap="wrap"
-          justifyContent="flex-start"
-          _after={{ content: '""', flex: "auto" }}
-          mx={{ base: "auto", lg: "0" }}
-          px="5"
-        >
-          {data.results.map((result: ResultMovie) => {
-            return <CardDiscover result={result} key={result.id} />;
-          })}
-        </Flex>
+        {data.results.length == 0 ? (
+          <Text fontSize="2xl" textAlign="center" w="full" pt="3">
+            No Result Found!
+          </Text>
+        ) : (
+          <Flex
+            gap={{ base: "10px", md: "27px" }}
+            pt="3"
+            wrap="wrap"
+            justifyContent="flex-start"
+            _after={{ content: '""', flex: "auto" }}
+            mx={{ base: "auto", lg: "0" }}
+            px={{ base: "0", md: "5px" }}
+          >
+            {data.results.map((result: ResultMovie) => {
+              return <CardDiscover result={result} key={result.id} />;
+            })}
+          </Flex>
+        )}
       </Flex>
 
       {data.results.length === 20 && (
