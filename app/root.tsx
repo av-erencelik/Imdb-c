@@ -65,7 +65,7 @@ export function CatchBoundary() {
       <ChakraProvider>
         <Box>
           <Heading as="h1" bg="purple.600">
-            [CatchBoundary]: {caught.status} {caught.statusText}
+            [CatchBoundary]: {caught.status} {caught.data.message}
           </Heading>
         </Box>
       </ChakraProvider>

@@ -1,15 +1,16 @@
-import { StarIcon } from "@chakra-ui/icons";
-import { Box, Card, CardBody, Container, Flex, Image, Stack, Text } from "@chakra-ui/react";
-import { redirect, type LoaderArgs } from "@remix-run/node";
-import { Link, useLoaderData, useNavigate, useSearchParams } from "@remix-run/react";
-import fallbackImg from "../../public/fallback.jpg";
-import defaultPP from "../../public/default.jpg";
+import { Container, Flex, Text } from "@chakra-ui/react";
+import { redirect, type LoaderArgs, json } from "@remix-run/node";
+import { useLoaderData, useNavigate, useSearchParams } from "@remix-run/react";
+
 import { usePagination } from "@ajna/pagination";
 import CommonPagination from "~/components/common_components/CommonPagination";
 import { CardDiscover } from "~/components/common_components/CardDiscover";
-export async function loader({ params, request }: LoaderArgs) {
+export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url);
   const searchParam = url.searchParams.get("search");
+  if (!searchParam) {
+    throw json({ message: "there is no valid query to search" }, 501);
+  }
   if (!url.searchParams.get("page")) {
     url.searchParams.set("page", "1");
     return redirect(`/search?${url.searchParams.toString()}`);
@@ -20,12 +21,13 @@ export async function loader({ params, request }: LoaderArgs) {
     }&query=${searchParam}&page=${url.searchParams.get("page")}`
   );
   const data = await searchResponse.json();
-  return { data: data };
+  return { data: data, error: null };
 }
 const Search = () => {
   const { data } = useLoaderData();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
   const { currentPage, setCurrentPage, pagesCount, pages } = usePagination({
     pagesCount: Number(data.total_pages),
     limits: {
@@ -39,6 +41,7 @@ const Search = () => {
     searchParams.set("page", `${nextPage}`);
     navigate(`/search?${searchParams.toString()}`);
   };
+
   return (
     <Container maxW="container.xl" py="5">
       <Text as="h2" fontSize="2xl" fontWeight="bold" color="yellow.400" bg="blackAlpha.800" pl="4" borderRadius="md">

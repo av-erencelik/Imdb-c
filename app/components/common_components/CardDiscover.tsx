@@ -1,7 +1,7 @@
 import { Box, Card, CardBody, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import { Link } from "@remix-run/react";
-import fallbackImg from "../../public/fallback.jpg";
-import defaultPP from "../../public/default.jpg";
+import fallbackImg from "../../../public/fallback.jpg";
+import defaultPP from "../../../public/default.jpg";
 import { StarIcon } from "@chakra-ui/icons";
 
 export const CardDiscover = ({ result }: { result: ResultMovie | ResultPerson | ResultTvShow }) => {
