@@ -58,7 +58,7 @@ const Navbar = ({ user }: { user: any }) => {
                 <DrawerCloseButton color="yellow.400" mb={"25px"} />
 
                 <DrawerBody p={"0"}>
-                  <Accordion>
+                  <Accordion allowToggle>
                     <AccordionItem border={"none"}>
                       <h2>
                         <AccordionButton
@@ -75,16 +75,41 @@ const Navbar = ({ user }: { user: any }) => {
                       </h2>
                       <AccordionPanel p="0" color="yellow.400">
                         <ChakraLink
+                          as="div"
                           width="100%"
                           display="block"
                           p="1"
                           pl="35px"
                           textStyle="none"
                           _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                          onClick={() => onClose()}
                         >
-                          Lorem
+                          <Link to="/discover/movie">Discover</Link>
                         </ChakraLink>
-                        <Divider />
+                        <ChakraLink
+                          as="div"
+                          width="100%"
+                          display="block"
+                          p="1"
+                          pl="35px"
+                          textStyle="none"
+                          _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                          onClick={() => onClose()}
+                        >
+                          <Link to="/discover/movie?sort_by=vote_average.desc">Top Rated</Link>
+                        </ChakraLink>
+                        <ChakraLink
+                          as="div"
+                          width="100%"
+                          display="block"
+                          p="1"
+                          pl="35px"
+                          textStyle="none"
+                          _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                          onClick={() => onClose()}
+                        >
+                          <Link to="/discover/movie?upcoming=true&page=1">Upcoming</Link>
+                        </ChakraLink>
                       </AccordionPanel>
                     </AccordionItem>
                     <AccordionItem border={"none"}>
@@ -112,7 +137,6 @@ const Navbar = ({ user }: { user: any }) => {
                         >
                           Lorem
                         </ChakraLink>
-                        <Divider />
                       </AccordionPanel>
                     </AccordionItem>
                     <AccordionItem border={"none"} _expanded={{ border: "3px" }}>
@@ -150,7 +174,6 @@ const Navbar = ({ user }: { user: any }) => {
                         >
                           Lorem
                         </ChakraLink>
-                        <Divider />
                       </AccordionPanel>
                     </AccordionItem>
                   </Accordion>
@@ -211,9 +234,15 @@ const Navbar = ({ user }: { user: any }) => {
                 Movies
               </MenuButton>
               <MenuList minWidth={"150px"}>
-                <MenuItem px={"6"}>Lorem</MenuItem>
-                <MenuItem px={"6"}>Lorem</MenuItem>
-                <MenuItem px={"6"}>Lorem</MenuItem>
+                <MenuItem px={"6"}>
+                  <Link to="/discover/movie">Discover</Link>
+                </MenuItem>
+                <MenuItem px={"6"}>
+                  <Link to="/discover/movie?sort_by=vote_average.desc">Top Rated</Link>
+                </MenuItem>
+                <MenuItem px={"6"}>
+                  <Link to="/discover/movie?upcoming=true&page=1">Upcoming</Link>
+                </MenuItem>
               </MenuList>
             </Menu>
             <Menu>
