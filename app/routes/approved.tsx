@@ -9,7 +9,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
   const requestToken = url.searchParams.get("request_token");
   const response = await fetch(
-    "https://api.themoviedb.org/3/authentication/session/new?api_key=f6a209b4c28e86ec9c12c4ca8d885108",
+    `https://api.themoviedb.org/3/authentication/session/new?api_key=${process.env.API_KEY}`,
     {
       method: "POST",
       headers: {

@@ -325,7 +325,9 @@ const Navbar = ({ user }: { user: any }) => {
                   ></Avatar>
                 </MenuButton>
                 <MenuList minWidth={"150px"}>
-                  <MenuItem px={"6"}>Lorem</MenuItem>
+                  <MenuItem px={"6"}>
+                    <Link to="/logout">Logout</Link>
+                  </MenuItem>
                   <MenuItem px={"6"}>Lorem</MenuItem>
                 </MenuList>
               </Menu>

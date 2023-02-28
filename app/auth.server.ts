@@ -18,6 +18,14 @@ export async function createUserSession(sessionId: string) {
     },
   });
 }
+export async function destroyUserSession(request: Request) {
+  const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+  return redirect("/home", {
+    headers: {
+      "Set-Cookie": await sessionStorage.destroySession(session),
+    },
+  });
+}
 export async function getUserFromSession(request: Request) {
   const session = await sessionStorage.getSession(request.headers.get("Cookie"));
   const sessionId = session.get("sessionId");
