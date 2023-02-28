@@ -242,7 +242,7 @@ const DiscoverTv = () => {
             mx={{ base: "auto", lg: "0" }}
             px={{ base: "0", md: "5px" }}
           >
-            {data.results.map((result: ResultMovie) => {
+            {data.results.map((result: ResultTvShow) => {
               return <CardDiscover result={result} key={result.id} />;
             })}
           </Flex>

@@ -127,14 +127,40 @@ const Navbar = ({ user }: { user: any }) => {
                       </h2>
                       <AccordionPanel p="0" color="yellow.400">
                         <ChakraLink
+                          as="div"
                           width="100%"
                           display="block"
                           p="1"
                           pl="35px"
                           textStyle="none"
                           _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                          onClick={() => onClose()}
                         >
-                          Lorem
+                          <Link to="/discover/tv">Discover</Link>
+                        </ChakraLink>
+                        <ChakraLink
+                          as="div"
+                          width="100%"
+                          display="block"
+                          p="1"
+                          pl="35px"
+                          textStyle="none"
+                          _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                          onClick={() => onClose()}
+                        >
+                          <Link to="/discover/tv?sort_by=vote_average.desc">Top Rated</Link>
+                        </ChakraLink>
+                        <ChakraLink
+                          as="div"
+                          width="100%"
+                          display="block"
+                          p="1"
+                          pl="35px"
+                          textStyle="none"
+                          _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                          onClick={() => onClose()}
+                        >
+                          <Link to="/discover/tv?airing=true">On Air</Link>
                         </ChakraLink>
                       </AccordionPanel>
                     </AccordionItem>
@@ -258,10 +284,14 @@ const Navbar = ({ user }: { user: any }) => {
               </MenuButton>
               <MenuList minWidth={"150px"}>
                 <MenuItem px={"6"} _focus={{ bg: "gray.50" }}>
-                  Lorem
+                  <Link to="/discover/tv">Discover</Link>
                 </MenuItem>
-                <MenuItem px={"6"}>Lorem</MenuItem>
-                <MenuItem px={"6"}>Lorem</MenuItem>
+                <MenuItem px={"6"}>
+                  <Link to="/discover/tv?sort_by=vote_average.desc">Top Rated</Link>
+                </MenuItem>
+                <MenuItem px={"6"}>
+                  <Link to="/discover/tv?airing=true">On Air</Link>
+                </MenuItem>
               </MenuList>
             </Menu>
             <Menu>

@@ -61,6 +61,7 @@ interface Credit {
   poster_path: string;
   vote_average: number;
   vote_count: number;
+  job?: string;
 }
 interface TvCredit extends Credit {
   episode_count: number;
@@ -81,7 +82,7 @@ interface People {
   also_known_as: string[];
   biography: string;
   birthday: string;
-  combined_credits: { cast: (TvCredit | MovieCredit)[] };
+  combined_credits: { cast: (TvCredit | MovieCredit)[]; crew: (TvCredit | MovieCredit)[] };
   deathday: null | string;
   gender: 1 | 2;
   homepage: null | string;

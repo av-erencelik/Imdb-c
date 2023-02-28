@@ -23,7 +23,7 @@ export const CardDiscover = ({ result }: { result: ResultMovie | ResultPerson | 
             ? "tv"
             : "release_date" in result
             ? "movie"
-            : "person"
+            : "people"
         }/${result.id}`}
       >
         <div style={{ overflow: "hidden" }}>
