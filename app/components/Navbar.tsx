@@ -180,24 +180,16 @@ const Navbar = ({ user }: { user: any }) => {
                       </h2>
                       <AccordionPanel p="0" color="yellow.400">
                         <ChakraLink
+                          as="div"
                           width="100%"
                           display="block"
                           p="1"
                           pl="35px"
                           textStyle="none"
                           _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
+                          onClick={() => onClose()}
                         >
-                          Lorem
-                        </ChakraLink>
-                        <ChakraLink
-                          width="100%"
-                          display="block"
-                          p="1"
-                          pl="35px"
-                          textStyle="none"
-                          _hover={{ textStyle: "none", bg: "blackAlpha.400" }}
-                        >
-                          Lorem
+                          <Link to="/people/popular">Popular</Link>
                         </ChakraLink>
                       </AccordionPanel>
                     </AccordionItem>
@@ -307,9 +299,9 @@ const Navbar = ({ user }: { user: any }) => {
                 People
               </MenuButton>
               <MenuList minWidth={"150px"}>
-                <MenuItem px={"6"}>Lorem</MenuItem>
-                <MenuItem px={"6"}>Lorem</MenuItem>
-                <MenuItem px={"6"}>Lorem</MenuItem>
+                <MenuItem px={"6"}>
+                  <Link to="/people/popular">Popular</Link>
+                </MenuItem>
               </MenuList>
             </Menu>
             {!user ? (
