@@ -21,47 +21,43 @@ import GenreCheckbox from "~/components/form/GenreCheckbox";
 import RatingSlider from "~/components/form/RatingSlider";
 import ReleaseDateInputs from "~/components/form/ReleaseDateInputs";
 import SortSelect from "~/components/form/SortSelect";
-
 export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url);
   if (!url.searchParams.get("page")) {
     url.searchParams.set("page", "1");
-    return redirect(`/discover/movie?${url.searchParams.toString()}`);
+    return redirect(`/discover/tv?${url.searchParams.toString()}`);
   }
-  if (url.searchParams.get("upcoming")) {
-    const upcomingResponse = await fetch(
-      `https://api.themoviedb.org/3/movie/upcoming?api_key=${process.env.API_KEY}&page=${url.searchParams.get(
+  if (url.searchParams.get("airing")) {
+    const airingResponse = await fetch(
+      `https://api.themoviedb.org/3/tv/on_the_air?api_key=${process.env.API_KEY}&page=${url.searchParams.get(
         "page"
-      )}&region=us`
+      )}&language=en-US`
     );
-    const upcoming = await upcomingResponse.json();
-    return { data: upcoming };
+    const airing = await airingResponse.json();
+    return { data: airing };
   }
   if (!url.searchParams.get("sort_by")) {
     url.searchParams.set("sort_by", "popularity.desc");
-    return redirect(`/discover/movie?${url.searchParams.toString()}`);
+    return redirect(`/discover/tv?${url.searchParams.toString()}`);
   }
 
   const discoverResponse = await fetch(`
-    https://api.themoviedb.org/3/discover/movie?api_key=${process.env.API_KEY}&page=${url.searchParams.get(
+      https://api.themoviedb.org/3/discover/tv?api_key=${process.env.API_KEY}&page=${url.searchParams.get(
     "page"
-  )}&sort_by=${url.searchParams.get("sort_by")}&primary_release_date.lte=${
-    url.searchParams.get("primary_release_date.lte") || ""
-  }&primary_release_date.gte=${url.searchParams.get("primary_release_date.gte") || ""}&with_genres=${
+  )}&sort_by=${url.searchParams.get("sort_by")}&first_air_date.lte=${
+    url.searchParams.get("first_air_date.lte") || ""
+  }&first_air_date.gte=${url.searchParams.get("first_air_date.gte") || ""}&with_genres=${
     url.searchParams.getAll("genres").toString() || ""
   }&vote_average.gte=${url.searchParams.get("min") || "0"}&vote_average.lte=${url.searchParams.get("max") || "10"}${
-    url.searchParams.get("sort_by") === "vote_average.desc" || url.searchParams.get("sort_by") === "vote_average.desc"
-      ? "&vote_count.gte=1"
-      : ""
+    url.searchParams.get("sort_by") === "vote_average.desc" ? "&vote_count.gte=200" : ""
   }`);
   const genresResponse = await fetch(`
-  https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.API_KEY}`);
+    https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.API_KEY}`);
   const genres = await genresResponse.json();
   const responseData = await discoverResponse.json();
   return { data: responseData, genres: genres };
 }
-
-const DiscoverMovie = () => {
+const DiscoverTv = () => {
   const { data, genres } = useLoaderData();
   const [searchParams] = useSearchParams();
   const navigation = useNavigation();
@@ -78,17 +74,17 @@ const DiscoverMovie = () => {
   const handlePageChange = (nextPage: number): void => {
     setCurrentPage(nextPage);
     searchParams.set("page", `${nextPage}`);
-    navigate(`/discover/movie?${searchParams.toString()}`);
+    navigate(`/discover/tv?${searchParams.toString()}`);
   };
   return (
     <Container maxW="container.xl" py="5">
       <Text as="h2" fontSize="2xl" fontWeight="bold" color="yellow.400" bg="blackAlpha.800" pl="4" borderRadius="md">
         {searchParams.get("sort_by") === "vote_average.desc"
           ? "Top Rated"
-          : searchParams.get("upcoming")
-          ? "Upcoming"
+          : searchParams.get("airing")
+          ? "Currently Airing"
           : "Discover"}{" "}
-        Movies
+        Tv Shows
       </Text>
       {data.total_pages != 1 && data.total_pages != 0 && (
         <CommonPagination
@@ -99,7 +95,7 @@ const DiscoverMovie = () => {
         />
       )}
       <Flex flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "center", md: "normal" }}>
-        {!searchParams.get("upcoming") && (
+        {!searchParams.get("airing") && (
           <Box py="3" w={{ base: "full", md: "initial" }}>
             <Accordion w={{ base: "full", md: "232px" }} allowToggle>
               <Form method="get">
@@ -115,8 +111,8 @@ const DiscoverMovie = () => {
                   <AccordionPanel pb={4}>
                     <SortSelect
                       searchParams={searchParams}
-                      dateAsc="primary_release_date.asc"
-                      dateDesc="primary_release_date.desc"
+                      dateAsc="first_air_date.asc"
+                      dateDesc="first_air_date.desc"
                     />
                     <Flex>
                       <Link to="/discover/movie" style={{ width: "100%" }}>
@@ -167,8 +163,8 @@ const DiscoverMovie = () => {
                       <Text color="gray.500">Release Dates</Text>
                       <ReleaseDateInputs
                         searchParams={searchParams}
-                        lte={"primary_release_date.lte"}
-                        gte={"primary_release_date.gte"}
+                        lte={"first_air_date.lte"}
+                        gte={"first_air_date.gte"}
                       />
                     </Box>
                     <Box
@@ -265,4 +261,4 @@ const DiscoverMovie = () => {
   );
 };
 
-export default DiscoverMovie;
+export default DiscoverTv;

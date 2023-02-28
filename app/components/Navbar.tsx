@@ -9,7 +9,6 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
