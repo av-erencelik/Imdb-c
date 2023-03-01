@@ -44,3 +44,44 @@ body {
   flex-direction: column;
   gap: 10px;
 }
+.progress {
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  height: 0.25rem;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.bar {
+  background-image: linear-gradient(to right, #ebd47f);
+  background-color: #ecc94b;
+  transition-property: all;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+}
+.idle {
+  transition-property: none;
+  width: 0;
+  opacity: 0;
+}
+.submit {
+  width: 33.333333%;
+}
+.load {
+  width: 83.333333%;
+}
+.finish {
+  width: 100%;
+}

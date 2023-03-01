@@ -10,6 +10,7 @@ import stylesSlickTheme from "slick-carousel/slick/slick-theme.css";
 import global from "../app/styles/global.css";
 import Footer from "./components/Footer";
 import { getUserFromSession, getUserInfos } from "./auth.server";
+import { GlobalLoading } from "./components/GlobalProgress";
 const theme = extendTheme({
   fonts: {
     body: `'Hind'`,
@@ -48,6 +49,7 @@ export default function App() {
   return (
     <Document>
       <ChakraProvider theme={theme}>
+        <GlobalLoading />
         <Navbar user={user} />
         <Outlet />
         <Footer />
