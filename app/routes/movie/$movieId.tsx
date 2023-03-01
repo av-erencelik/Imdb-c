@@ -10,7 +10,7 @@ import VideoSlider from "~/components/VideoSlider";
 import LandingMovieDesktop from "~/components/movie/LandingMovieDesktop";
 import LandingMovieMobile from "~/components/movie/LandingMovieMobile";
 import DetailsStickyFooter from "~/components/common_components/DetailsStickyFooter";
-import { MetaFunction } from "@remix-run/react/dist/routeModules";
+import { type MetaFunction } from "@remix-run/react/dist/routeModules";
 var Vibrant = require("node-vibrant");
 var tinycolor = require("tinycolor2");
 

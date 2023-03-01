@@ -328,7 +328,9 @@ const Navbar = ({ user }: { user: any }) => {
                   <MenuItem px={"6"}>
                     <Link to="/logout">Logout</Link>
                   </MenuItem>
-                  <MenuItem px={"6"}>Lorem</MenuItem>
+                  <MenuItem px={"6"}>
+                    <Link to="/profile/watchlist/movie">Profile</Link>
+                  </MenuItem>
                 </MenuList>
               </Menu>
             )}
