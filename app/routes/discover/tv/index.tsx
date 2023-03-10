@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Form, Link, useLoaderData, useNavigate, useNavigation, useSearchParams } from "@remix-run/react";
 import { redirect, type LoaderArgs } from "@remix-run/server-runtime";
-
+import { json } from "@remix-run/node";
 import { CardDiscover } from "~/components/common_components/CardDiscover";
 import CommonPagination from "~/components/common_components/CommonPagination";
 import GenreCheckbox from "~/components/form/GenreCheckbox";
@@ -34,6 +34,7 @@ export async function loader({ request }: LoaderArgs) {
       )}&language=en-US`
     );
     const airing = await airingResponse.json();
+    if (airing.status_code) throw json("Error", 404);
     return { data: airing };
   }
   if (!url.searchParams.get("sort_by")) {
@@ -55,6 +56,8 @@ export async function loader({ request }: LoaderArgs) {
     https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.API_KEY}`);
   const genres = await genresResponse.json();
   const responseData = await discoverResponse.json();
+  if (genres.status_code) throw json("Error", 404);
+  if (responseData.status_code) throw json("Error", 404);
   return { data: responseData, genres: genres };
 }
 const DiscoverTv = () => {

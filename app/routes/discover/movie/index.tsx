@@ -21,6 +21,7 @@ import GenreCheckbox from "~/components/form/GenreCheckbox";
 import RatingSlider from "~/components/form/RatingSlider";
 import ReleaseDateInputs from "~/components/form/ReleaseDateInputs";
 import SortSelect from "~/components/form/SortSelect";
+import { json } from "@remix-run/node";
 
 export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url);
@@ -35,6 +36,7 @@ export async function loader({ request }: LoaderArgs) {
       )}&region=us`
     );
     const upcoming = await upcomingResponse.json();
+    if (upcoming.status_code) throw json("Error", 404);
     return { data: upcoming };
   }
   if (!url.searchParams.get("sort_by")) {
@@ -54,10 +56,13 @@ export async function loader({ request }: LoaderArgs) {
       ? "&vote_count.gte=1"
       : ""
   }`);
+
   const genresResponse = await fetch(`
   https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.API_KEY}`);
   const genres = await genresResponse.json();
   const responseData = await discoverResponse.json();
+  if (genres.status_code) throw json("Error", 404);
+  if (responseData.status_code) throw json("Error", 404);
   return { data: responseData, genres: genres };
 }
 

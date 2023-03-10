@@ -1,6 +1,7 @@
 import { Box, Card, CardBody, Container, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import { type LoaderArgs, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { type MetaFunction } from "@remix-run/react/dist/routeModules";
 import ReleaseDate from "~/components/common_components/ReleaseDate";
 import Title from "~/components/common_components/Title";
 import fallbackImg from "../../../../../public/fallback.jpg";
@@ -8,13 +9,20 @@ import fallbackPng from "../../../../../public/fallback.png";
 export async function loader({ params, request }: LoaderArgs) {
   const seasonNumber = params.seasonId;
   const url = new URL(request.url);
-  const responseSeasonDetails = await fetch(
-    `https://api.themoviedb.org/3/tv/${url.pathname.split("/")[2]}/season/${seasonNumber}?api_key=${
-      process.env.API_KEY
-    }&append_to_response=images`
-  );
-  const seasonDetails = await responseSeasonDetails.json();
-  return json({ season: seasonDetails });
+  try {
+    const responseSeasonDetails = await fetch(
+      `https://api.themoviedb.org/3/tv/${url.pathname.split("/")[2]}/season/${seasonNumber}?api_key=${
+        process.env.API_KEY
+      }&append_to_response=images`
+    );
+    const seasonDetails = await responseSeasonDetails.json();
+    if (seasonDetails.status_code) {
+      throw json("error");
+    }
+    return json({ season: seasonDetails });
+  } catch (e) {
+    throw json("Error", { status: 404 });
+  }
 }
 const Season = () => {
   const { season } = useLoaderData<typeof loader>();
@@ -75,5 +83,9 @@ const Season = () => {
     </Box>
   );
 };
-
+export const meta: MetaFunction = ({ data }) => {
+  return {
+    title: data ? `${data.season.name}` : "Error",
+  };
+};
 export default Season;

@@ -9,7 +9,7 @@ export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url);
   const searchParam = url.searchParams.get("search");
   if (!searchParam) {
-    throw json({ message: "there is no valid query to search" }, 501);
+    throw json("there is no valid query to search", 501);
   }
   if (!url.searchParams.get("page")) {
     url.searchParams.set("page", "1");
@@ -21,6 +21,7 @@ export async function loader({ request }: LoaderArgs) {
     }&query=${searchParam}&page=${url.searchParams.get("page")}`
   );
   const data = await searchResponse.json();
+  if (data.status_code) throw json("Error", 404);
   return { data: data, error: null };
 }
 const Search = () => {

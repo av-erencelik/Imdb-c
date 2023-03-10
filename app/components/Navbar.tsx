@@ -32,7 +32,6 @@ import Logo from "../../public/logo.png";
 import { Link as ChakraLink } from "@chakra-ui/react";
 
 const Navbar = ({ user }: { user: any }) => {
-  console.log(user);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isSearching, setIsSearching] = useState(false);
   return (

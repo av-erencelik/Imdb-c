@@ -1,17 +1,22 @@
 import { Box, Card, CardBody, Container, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import { getUserFromSession } from "~/auth.server";
-import { type LoaderArgs, type Request } from "@remix-run/node";
+import { type LoaderArgs, type Request, json } from "@remix-run/node";
 import fallbackImg from "../../../../public/fallback.jpg";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { DeleteIcon, StarIcon } from "@chakra-ui/icons";
 import { type IconType } from "react-icons/lib";
 import DeleteButton from "~/components/buttons/DeleteButton";
 export async function loader({ request }: { request: Request }) {
-  const sessionId = await getUserFromSession(request);
-  const watchlistResponse = await fetch(`
+  try {
+    const sessionId = await getUserFromSession(request);
+    const watchlistResponse = await fetch(`
   https://api.themoviedb.org/3/account/a/watchlist/tv?api_key=${process.env.API_KEY}&session_id=${sessionId}&sort_by=created_at.desc&page=1`);
-  const watchlist = await watchlistResponse.json();
-  return { watchlist };
+    const watchlist = await watchlistResponse.json();
+    if (watchlist.status_code) throw json("error");
+    return { watchlist };
+  } catch (e) {
+    throw json("Error", { status: 404 });
+  }
 }
 export async function action({ request }: LoaderArgs) {
   const formData = await request.formData();

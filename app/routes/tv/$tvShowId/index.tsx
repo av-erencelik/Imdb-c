@@ -1,6 +1,7 @@
 import { Box, Container } from "@chakra-ui/react";
 import { json, type LoaderArgs, type Request } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { type MetaFunction } from "@remix-run/react/dist/routeModules";
 
 import { getUserFromSession, postAddWatchList, postFavorite, rate } from "~/auth.server";
 
@@ -18,26 +19,33 @@ var tinycolor = require("tinycolor2");
 
 export async function loader({ params, request }: LoaderArgs) {
   const id = params.tvShowId;
-  const sessionId = await getUserFromSession(request as Request);
-  const responseTvShowDetails = await fetch(
-    `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}&session_id=${sessionId}&US&append_to_response=credits,videos,account_states,watch/providers`
-  );
-  const tvShowDetails = await responseTvShowDetails.json();
-  if (tvShowDetails.backdrop_path) {
-    await Vibrant.from(`https://image.tmdb.org/t/p/original${tvShowDetails.backdrop_path}`)
-      .getPalette()
-      .then(
-        (palette: any) =>
-          (tvShowDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
-      );
-  } else {
-    tvShowDetails.colorRgb = "rgb(236, 201, 75, 0.8)";
-  }
+  try {
+    const sessionId = await getUserFromSession(request as Request);
+    const responseTvShowDetails = await fetch(
+      `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.API_KEY}&session_id=${sessionId}&US&append_to_response=credits,videos,account_states,watch/providers`
+    );
+    const tvShowDetails = await responseTvShowDetails.json();
+    if (tvShowDetails.status_code) {
+      throw json("error");
+    }
+    if (tvShowDetails.backdrop_path) {
+      await Vibrant.from(`https://image.tmdb.org/t/p/original${tvShowDetails.backdrop_path}`)
+        .getPalette()
+        .then(
+          (palette: any) =>
+            (tvShowDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
+        );
+    } else {
+      tvShowDetails.colorRgb = "rgb(236, 201, 75, 0.8)";
+    }
 
-  const color = tinycolor(tvShowDetails.colorRgb);
-  const cast = returnNecessaryPeople(tvShowDetails.credits.cast);
-  tvShowDetails.isLight = color.isLight();
-  return json({ movie: tvShowDetails, cast });
+    const color = tinycolor(tvShowDetails.colorRgb);
+    const cast = returnNecessaryPeople(tvShowDetails.credits.cast);
+    tvShowDetails.isLight = color.isLight();
+    return json({ movie: tvShowDetails, cast });
+  } catch (e) {
+    throw json("Error", { status: 404 });
+  }
 }
 export async function action({ request, params }: LoaderArgs) {
   const formData = await request.formData();
@@ -58,7 +66,6 @@ export async function action({ request, params }: LoaderArgs) {
 }
 const TvShowDetails = () => {
   const { movie, cast } = useLoaderData<typeof loader>();
-  console.log(movie);
   return (
     <Box as="main">
       <LandingTvDesktop movie={movie} />
@@ -71,6 +78,11 @@ const TvShowDetails = () => {
       <Seasons seasons={movie.seasons} />
     </Box>
   );
+};
+export const meta: MetaFunction = ({ data }) => {
+  return {
+    title: data ? `${data.movie.name}` : "Error",
+  };
 };
 
 export default TvShowDetails;

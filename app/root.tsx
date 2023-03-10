@@ -1,6 +1,6 @@
 // root.tsx
-import { ChakraProvider, Box, Heading } from "@chakra-ui/react";
-import { json, MetaFunction, Request } from "@remix-run/node";
+import { ChakraProvider, Box, Heading, Link } from "@chakra-ui/react";
+import { json, type MetaFunction, type Request } from "@remix-run/node";
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useCatch, useLoaderData } from "@remix-run/react";
 import { extendTheme } from "@chakra-ui/react";
 import Navbar from "./components/Navbar";
@@ -9,8 +9,9 @@ import stylesSlick from "slick-carousel/slick/slick.css";
 import stylesSlickTheme from "slick-carousel/slick/slick-theme.css";
 import global from "../app/styles/global.css";
 import Footer from "./components/Footer";
-import { getUserFromSession, getUserInfos } from "./auth.server";
+
 import { GlobalLoading } from "./components/GlobalProgress";
+import { getUserInfos } from "./auth.server";
 const theme = extendTheme({
   fonts: {
     body: `'Hind'`,
@@ -44,7 +45,6 @@ function Document({ children, title = "App title" }: { children: React.ReactNode
 }
 
 export default function App() {
-  // throw new Error("💣💥 Booooom");
   const { user } = useLoaderData();
   return (
     <Document>
@@ -61,14 +61,33 @@ export default function App() {
 // How ChakraProvider should be used on CatchBoundary
 export function CatchBoundary() {
   const caught = useCatch();
-
   return (
     <Document title={`${caught.status} ${caught.statusText}`}>
       <ChakraProvider>
-        <Box>
-          <Heading as="h1" bg="purple.600">
-            [CatchBoundary]: {caught.status} {caught.data.message}
-          </Heading>
+        <GlobalLoading />
+        <Box
+          h={"100vh"}
+          bg="yellow.400"
+          display={"flex"}
+          alignItems="center"
+          justifyContent="center"
+          flexDirection="column"
+          gap="7"
+        >
+          <Box>
+            <Heading as="h1" display="block">
+              {caught.status} {caught.data}
+            </Heading>
+          </Box>
+
+          <Box>
+            <Heading as="h2" display="block" fontSize="xl">
+              Something Happened!
+            </Heading>
+          </Box>
+          <Link href="/home" bg="gray.700" color="yellow.400" px="2" py="1" borderRadius="lg">
+            Back To Home
+          </Link>
         </Box>
       </ChakraProvider>
     </Document>

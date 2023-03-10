@@ -16,26 +16,32 @@ var tinycolor = require("tinycolor2");
 
 export async function loader({ params, request }: LoaderArgs) {
   const id = params.movieId;
-  const sessionId = await getUserFromSession(request as Request);
-  const responseMovieDetails = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}&session_id=${sessionId}&US&append_to_response=credits,videos,account_states,watch/providers`
-  );
-  const movieDetails = await responseMovieDetails.json();
-  if (movieDetails.backdrop_path) {
-    await Vibrant.from(`https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}`)
-      .getPalette()
-      .then(
-        (palette: any) =>
-          (movieDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
-      );
-  } else {
-    movieDetails.colorRgb = "rgb(236, 201, 75, 0.8)";
+  try {
+    const sessionId = await getUserFromSession(request as Request);
+    const responseMovieDetails = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}&session_id=${sessionId}&US&append_to_response=credits,videos,account_states,watch/providers`
+    );
+    const movieDetails = await responseMovieDetails.json();
+    if (movieDetails.status_code) {
+      throw json("error");
+    }
+    if (movieDetails.backdrop_path) {
+      await Vibrant.from(`https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}`)
+        .getPalette()
+        .then(
+          (palette: any) =>
+            (movieDetails.colorRgb = `rgb(${palette.Vibrant._rgb[0]},${palette.Vibrant._rgb[1]}, ${palette.Vibrant._rgb[2]}, 0.8)`)
+        );
+    } else {
+      movieDetails.colorRgb = "rgb(236, 201, 75, 0.8)";
+    }
+    const color = tinycolor(movieDetails.colorRgb);
+    const cast = returnNecessaryPeople(movieDetails.credits.cast);
+    movieDetails.isLight = color.isLight();
+    return json({ movie: movieDetails, cast });
+  } catch (e) {
+    throw json("Error", { status: 404 });
   }
-
-  const color = tinycolor(movieDetails.colorRgb);
-  const cast = returnNecessaryPeople(movieDetails.credits.cast);
-  movieDetails.isLight = color.isLight();
-  return json({ movie: movieDetails, cast });
 }
 export async function action({ request, params }: LoaderArgs) {
   const formData = await request.formData();
@@ -71,7 +77,7 @@ const MovieDetails = () => {
 };
 export const meta: MetaFunction = ({ data }) => {
   return {
-    title: `${data.movie.title}`,
+    title: data ? `${data.movie.title}` : "Error",
   };
 };
 export default MovieDetails;

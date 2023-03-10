@@ -2,6 +2,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Avatar, Box, Button, Container, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { redirect, type Request } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import { type MetaFunction } from "@remix-run/react/dist/routeModules";
 import { getUserInfos } from "~/auth.server";
 export async function loader({ request }: { request: Request }) {
   const user = await getUserInfos(request);
@@ -133,6 +134,11 @@ const Profile = () => {
       <Outlet />
     </Box>
   );
+};
+export const meta: MetaFunction = ({ data }) => {
+  return {
+    title: "Profile",
+  };
 };
 
 export default Profile;

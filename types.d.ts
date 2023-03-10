@@ -93,6 +93,7 @@ interface People {
   place_of_birth: string;
   popularity: number;
   profile_path: string;
+  status_code?: number;
 }
 interface SearchResult {
   adult: boolean;

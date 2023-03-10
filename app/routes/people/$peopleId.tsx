@@ -8,11 +8,18 @@ import { type MetaFunction } from "@remix-run/react/dist/routeModules";
 import defaultPP from "../../../public/default.jpg";
 export async function loader({ params, request }: LoaderArgs) {
   const id = params.peopleId;
-  const responsePeopleDetails = await fetch(
-    `https://api.themoviedb.org/3/person/${id}?api_key=${process.env.API_KEY}&language=en-US&append_to_response=combined_credits`
-  );
-  const peopleDetails: People = await responsePeopleDetails.json();
-  return json({ people: peopleDetails });
+  try {
+    const responsePeopleDetails = await fetch(
+      `https://api.themoviedb.org/3/person/${id}?api_key=${process.env.API_KEY}&language=en-US&append_to_response=combined_credits`
+    );
+    const peopleDetails: People = await responsePeopleDetails.json();
+    if (peopleDetails.status_code) {
+      throw json("error");
+    }
+    return json({ people: peopleDetails });
+  } catch (e) {
+    throw json("Error", { status: 404 });
+  }
 }
 function compare(a: TvCredit | MovieCredit, b: TvCredit | MovieCredit) {
   return (
