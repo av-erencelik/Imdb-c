@@ -1,34 +1,66 @@
-# Welcome to Remix!
+# IMDB-C
 
-- [Remix Docs](https://remix.run/docs)
+IMDB-C is a movie and TV shows database website built with Remix.js, TypeScript, Chakra UI, Framer Motion, and other technologies. The website uses TMDB's REST API to fetch movie and TV show data, allowing users to search for movies and TV shows, rate them, add them to their watchlist, and mark them as favorites.
 
-## Deployment
+## Features
 
-After having run the `create-remix` command and selected "Vercel" as a deployment target, you only need to [import your Git repository](https://vercel.com/new) into Vercel, and it will be deployed.
+* Search for movies and TV shows by title or keyword
+* View details about a movie or TV show, including its rating, release date, cast, and crew
+* Rate movies and TV shows on a scale of 1 to 10
+* Add movies and TV shows to your watchlist or mark them as favorites
+* Browse popular movies and TV shows, as well as upcoming releases and top-rated movies
 
-If you'd like to avoid using a Git repository, you can also deploy the directory by running [Vercel CLI](https://vercel.com/cli):
+## Technologies
 
-```sh
-npm i -g vercel
-vercel
-```
+IMDB-C uses the following technologies:
 
-It is generally recommended to use a Git repository, because future commits will then automatically be deployed by Vercel, through its [Git Integration](https://vercel.com/docs/concepts/git).
+* Remix.js - A React-based framework for building server-rendered web apps
+* TypeScript - A statically typed superset of JavaScript
+* Chakra UI - A component library for React that provides a set of accessible and reusable UI components
+* Framer Motion - A library for adding animations and gestures to React components
+* Node Vibrant - A library for extracting colors from images
+* React Icons - A set of SVG icons for React
+* TinyColor - A library for working with colors in JavaScript
 
-## Development
+## Getting Started
 
-To run your Remix app locally, make sure your project's local dependencies are installed:
+To run the IMDB-C project on your local machine, follow these steps:
 
-```sh
-npm install
-```
+1. Clone the repository.
+2. Install the dependencies: `npm install`
+3. Create a `.env` file and set your TMDB API key: `API_KEY=YOUR_API_KEY`
+4. Start the development server: `npm run dev`
 
-Afterwards, start the Remix development server like so:
+You can now view the IMDB-C website at `http://localhost:3000`.
 
-```sh
-npm run dev
-```
+## Contributing
 
-Open up [http://localhost:3000](http://localhost:3000) and you should be ready to go!
+Contributions to IMDB-C are welcome! To contribute, please follow these steps:
 
-If you're used to using the `vercel dev` command provided by [Vercel CLI](https://vercel.com/cli) instead, you can also use that, but it's not needed.
+1. Fork the repository
+2. Create a new branch: `git checkout -b my-feature-branch`
+3. Make your changes and commit them: `git commit -m "Add new feature"`
+4. Push your changes to your forked repository: `git push origin my-feature-branch`
+5. Create a pull request on the original repository
+
+## Project Overview
+
+### Demo
+
+You can see a live demo of this project [here](https://imdb-c.vercel.app/).
+
+### Screenshots
+
+![Screenshot of IMDB-C homepage](https://i.postimg.cc/nC0cn4BY/Screenshot-45.png)
+![Screenshot of IMDB-C homepage](https://i.postimg.cc/nC0cn4BY/Screenshot-46.png)
+![Screenshot of IMDB-C discover](https://i.postimg.cc/nC0cn4BY/Screenshot-47.png)
+![Screenshot of IMDB-C details](https://i.postimg.cc/nC0cn4BY/Screenshot-48.png)
+![Screenshot of IMDB-C celeb details](https://i.postimg.cc/nC0cn4BY/Screenshot-49.png)
+## License
+
+IMDB-C is released under the MIT License. See [LICENSE](LICENSE) for details.
+
+## Credits
+
+IMDB-C was created by Mehmet Eren Çelik. Special thanks to TMDB for providing the movie and TV show data.
+
