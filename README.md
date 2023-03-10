@@ -51,11 +51,15 @@ You can see a live demo of this project [here](https://imdb-c.vercel.app/).
 
 ### Screenshots
 
-![Screenshot of IMDB-C homepage](https://i.postimg.cc/nC0cn4BY/Screenshot-45.png)
-![Screenshot of IMDB-C homepage](https://i.postimg.cc/nC0cn4BY/Screenshot-46.png)
-![Screenshot of IMDB-C discover](https://i.postimg.cc/nC0cn4BY/Screenshot-47.png)
-![Screenshot of IMDB-C details](https://i.postimg.cc/nC0cn4BY/Screenshot-48.png)
-![Screenshot of IMDB-C celeb details](https://i.postimg.cc/nC0cn4BY/Screenshot-49.png)
+![Screenshot of IMDB-C homepage](https://i.postimg.cc/BnG8cNvy/Screenshot-45.png)
+
+![Screenshot of IMDB-C homepage](https://i.postimg.cc/prFTKnMR/Screenshot-46.png)
+
+![Screenshot of IMDB-C discover](https://i.postimg.cc/PxcJLQcS/Screenshot-47.png)
+
+![Screenshot of IMDB-C details](https://i.postimg.cc/8sgC4PTW/Screenshot-48.png)
+
+![Screenshot of IMDB-C celeb details](https://i.postimg.cc/SKSJHsCf/Screenshot-49.png)
 ## License
 
 IMDB-C is released under the MIT License. See [LICENSE](LICENSE) for details.
